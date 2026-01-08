@@ -1,0 +1,237 @@
+﻿@model EduConectaPeru.Models.Docente
+
+@{
+    Layout = null;
+}
+
+<style>
+    .modal-header-custom {
+        background: linear-gradient(135deg, #42A5F5 0%, #2196F3 100%);
+        color: white;
+        border-radius: 15px 15px 0 0;
+        padding: 20px 25px;
+    }
+
+    .modal-body-custom {
+        padding: 30px;
+    }
+
+    .form-section {
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #f1f3f5;
+    }
+
+        .form-section:last-child {
+            border-bottom: none;
+        }
+
+    .form-section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .form-section-title i {
+            color: #2196F3;
+            font-size: 1.3rem;
+        }
+
+    .form-label-custom {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+    }
+
+    .form-control-custom {
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+    }
+
+        .form-control-custom:focus {
+            border-color: #2196F3;
+            box-shadow: 0 0 0 0.2rem rgba(33, 150, 243, 0.15);
+        }
+
+    .btn-cancel {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-cancel:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+    .btn-update {
+        background: linear-gradient(135deg, #42A5F5 0%, #2196F3 100%);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+    }
+
+        .btn-update:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.6);
+            color: white;
+        }
+
+    .text-danger {
+        font-size: 0.875rem;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="modal-header modal-header-custom">
+    <h5 class="modal-title">
+        <i class="bi bi-pencil-square"></i> Editar Docente
+    </h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+</div>
+
+<form id="editForm" asp-action="Edit" method="post">
+    <div class="modal-body modal-body-custom">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <input type="hidden" asp-for="DocenteId" />
+
+        <!-- Sección: Información Personal -->
+        <div class="form-section">
+            <div class="form-section-title">
+                <i class="bi bi-person-badge"></i>
+                <span>Información Personal</span>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label asp-for="DNI" class="form-label-custom">
+                        <i class="bi bi-card-text"></i> DNI
+                    </label>
+                    <input asp-for="DNI" class="form-control form-control-custom" maxlength="8" />
+                    <span asp-validation-for="DNI" class="text-danger"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Nombre" class="form-label-custom">
+                        <i class="bi bi-person"></i> Nombre
+                    </label>
+                    <input asp-for="Nombre" class="form-control form-control-custom" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Apellido" class="form-label-custom">
+                        <i class="bi bi-person"></i> Apellido
+                    </label>
+                    <input asp-for="Apellido" class="form-control form-control-custom" />
+                    <span asp-validation-for="Apellido" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección: Información Académica -->
+        <div class="form-section">
+            <div class="form-section-title">
+                <i class="bi bi-mortarboard"></i>
+                <span>Información Académica</span>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Especialidad" class="form-label-custom">
+                        <i class="bi bi-book"></i> Especialidad
+                    </label>
+                    <input asp-for="Especialidad" class="form-control form-control-custom" />
+                    <span asp-validation-for="Especialidad" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="FechaContratacion" class="form-label-custom">
+                        <i class="bi bi-calendar-event"></i> Fecha de Contratación
+                    </label>
+                    <input asp-for="FechaContratacion" type="date" class="form-control form-control-custom" />
+                    <span asp-validation-for="FechaContratacion" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección: Información de Contacto -->
+        <div class="form-section">
+            <div class="form-section-title">
+                <i class="bi bi-telephone"></i>
+                <span>Información de Contacto</span>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Telefono" class="form-label-custom">
+                        <i class="bi bi-phone"></i> Teléfono
+                    </label>
+                    <input asp-for="Telefono" class="form-control form-control-custom" />
+                    <span asp-validation-for="Telefono" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Email" class="form-label-custom">
+                        <i class="bi bi-envelope"></i> Email
+                    </label>
+                    <input asp-for="Email" type="email" class="form-control form-control-custom" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <input type="hidden" asp-for="IsActive" />
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle"></i> Cancelar
+        </button>
+        <button type="submit" class="btn btn-update">
+            <i class="bi bi-check-circle"></i> Actualizar Docente
+        </button>
+    </div>
+</form>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Formatear fecha para input tipo date
+        var fechaContratacion = '@Model.FechaContratacion.ToString("yyyy-MM-dd")';
+        $('input[name="FechaContratacion"]').val(fechaContratacion);
+
+        $('#editForm').on('submit', function (e) {
+            e.preventDefault();
+
+            if (!$(this).valid()) {
+                return false;
+            }
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function () {
+                    $('#editModal').modal('hide');
+                    location.reload();
+                },
+                error: function (xhr) {
+                    alert('Error al actualizar: ' + (xhr.responseText || 'Error desconocido'));
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,210 @@
+﻿@model EduConectaPeru.Models.PaymentStatus
+
+@{
+    Layout = null;
+}
+
+<style>
+    .modal-header-custom {
+        background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+        color: white;
+        border-radius: 15px 15px 0 0;
+        padding: 20px 25px;
+    }
+
+    .modal-body-custom {
+        padding: 30px;
+    }
+
+    .alert-custom {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border-left: 4px solid #f39c12;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+    }
+
+        .alert-custom i {
+            font-size: 2rem;
+            color: #f39c12;
+            margin-right: 15px;
+        }
+
+    .delete-info-box {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .delete-info-row {
+        display: flex;
+        padding: 10px 0;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+        .delete-info-row:last-child {
+            border-bottom: none;
+        }
+
+    .delete-info-label {
+        font-weight: 600;
+        color: #6c757d;
+        min-width: 150px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .delete-info-value {
+        color: #212529;
+        flex: 1;
+    }
+
+    .info-note {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-left: 4px solid #2196f3;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+
+    .btn-cancel {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-cancel:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+    .btn-delete-confirm {
+        background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+    }
+
+        .btn-delete-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+            color: white;
+        }
+
+    .status-preview {
+        text-align: center;
+        padding: 20px;
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        border-radius: 10px;
+        color: white;
+        margin-bottom: 20px;
+    }
+
+        .status-preview h4 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .status-preview p {
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+        }
+</style>
+
+<div class="modal-header modal-header-custom">
+    <h5 class="modal-title">
+        <i class="bi bi-exclamation-triangle"></i> Eliminar Estado de Pago
+    </h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+</div>
+
+<form id="deleteForm" asp-action="Delete" method="post">
+    <div class="modal-body modal-body-custom">
+        <input type="hidden" asp-for="StatusId" />
+
+        <div class="alert-custom">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <div>
+                    <h6 class="mb-1" style="color: #856404; font-weight: 700;">¡Advertencia!</h6>
+                    <p class="mb-0" style="color: #856404;">
+                        Está a punto de eliminar este estado de pago. Los pagos existentes con este estado se mantendrán pero no podrán ser modificados.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-preview">
+            <h4>@Model.StatusName</h4>
+            <p>Estado de Pago</p>
+        </div>
+
+        <div class="delete-info-box">
+            <h6 class="mb-3" style="color: #495057; font-weight: 600;">
+                <i class="bi bi-info-circle"></i> Información del Estado a Eliminar:
+            </h6>
+            <div class="delete-info-row">
+                <div class="delete-info-label">
+                    <i class="bi bi-hash"></i> ID:
+                </div>
+                <div class="delete-info-value">
+                    <strong>#@Model.StatusId</strong>
+                </div>
+            </div>
+            <div class="delete-info-row">
+                <div class="delete-info-label">
+                    <i class="bi bi-tag"></i> Nombre:
+                </div>
+                <div class="delete-info-value">
+                    <strong>@Model.StatusName</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-note">
+            <i class="bi bi-info-circle"></i>
+            <strong>Nota:</strong> Esta acción eliminará permanentemente el estado de pago del sistema.
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle"></i> Cancelar
+        </button>
+        <button type="submit" class="btn btn-delete-confirm">
+            <i class="bi bi-check-circle"></i> Confirmar Eliminación
+        </button>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function () {
+        $('#deleteForm').on('submit', function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function () {
+                    $('#deleteModal').modal('hide');
+                    location.reload();
+                },
+                error: function (xhr) {
+                    alert('Error al eliminar: ' + (xhr.responseText || 'Error desconocido'));
+                }
+            });
+        });
+    });
+</script>

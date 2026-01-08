@@ -1,0 +1,250 @@
+﻿@model EduConectaPeru.Models.PaymentStatus
+
+@{
+    Layout = null;
+}
+
+<style>
+    .modal-header-custom {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+        border-radius: 15px 15px 0 0;
+        padding: 20px 25px;
+    }
+
+    .modal-body-custom {
+        padding: 30px;
+    }
+
+    .form-section {
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #f1f3f5;
+    }
+
+        .form-section:last-child {
+            border-bottom: none;
+        }
+
+    .form-section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .form-section-title i {
+            color: #1976D2;
+            font-size: 1.3rem;
+        }
+
+    .form-label-custom {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+    }
+
+    .form-control-custom {
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+    }
+
+        .form-control-custom:focus {
+            border-color: #1976D2;
+            box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.15);
+        }
+
+    .btn-cancel {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-cancel:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+    .btn-save {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(25, 118, 210, 0.4);
+    }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(25, 118, 210, 0.6);
+            color: white;
+        }
+
+    .text-danger {
+        font-size: 0.875rem;
+        margin-top: 5px;
+    }
+
+    .info-box {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-left: 4px solid #2196f3;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .alert-error {
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        display: none;
+    }
+</style>
+
+<div class="modal-header modal-header-custom">
+    <h5 class="modal-title">
+        <i class="bi bi-plus-circle"></i> Nuevo Estado de Pago
+    </h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+</div>
+
+<form id="createForm" asp-action="Create" method="post">
+    <div class="modal-body modal-body-custom">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <!-- Alert de error dinámico -->
+        <div id="errorAlert" class="alert-error">
+            <i class="bi bi-exclamation-triangle"></i>
+            <span id="errorMessage"></span>
+        </div>
+
+        <div class="info-box">
+            <i class="bi bi-info-circle"></i>
+            <strong>Información:</strong> Registre un nuevo estado de pago que se utilizará para clasificar los pagos en el sistema.
+        </div>
+
+        <!-- Sección: Información del Estado -->
+        <div class="form-section">
+            <div class="form-section-title">
+                <i class="bi bi-tag"></i>
+                <span>Información del Estado</span>
+            </div>
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label asp-for="StatusName" class="form-label-custom">
+                        <i class="bi bi-card-heading"></i> Nombre del Estado
+                    </label>
+                    <input asp-for="StatusName" class="form-control form-control-custom" placeholder="Ej: Pendiente, Pagado, Cancelado" />
+                    <span asp-validation-for="StatusName" class="text-danger"></span>
+                    <small class="text-muted">
+                        <i class="bi bi-lightbulb"></i> Ejemplos comunes: Pendiente, Pagado, Cancelado, En Proceso, Rechazado
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle"></i> Cancelar
+        </button>
+        <button type="submit" class="btn btn-save" id="btnGuardar">
+            <i class="bi bi-check-circle"></i> Guardar Estado
+        </button>
+    </div>
+</form>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#createForm').on('submit', function (e) {
+            e.preventDefault();
+
+            // Validar formulario
+            if (!$(this).valid()) {
+                return false;
+            }
+
+            // Deshabilitar botón y mostrar "Guardando..."
+            var btnGuardar = $('#btnGuardar');
+            btnGuardar.prop('disabled', true);
+            btnGuardar.html('<i class="bi bi-hourglass-split"></i> Guardando...');
+
+            // Ocultar alerta de error previa
+            $('#errorAlert').hide();
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                dataType: 'json', // ✅ IMPORTANTE: Esperar respuesta JSON
+                success: function (response) {
+                    console.log('Respuesta del servidor:', response);
+
+                    if (response.success) {
+                        // ✅ Éxito: Cerrar modal y recargar
+                        $('#createModal').modal('hide');
+                        location.reload();
+                    } else {
+                        // ❌ Error reportado por el servidor
+                        btnGuardar.prop('disabled', false);
+                        btnGuardar.html('<i class="bi bi-check-circle"></i> Guardar Estado');
+
+                        $('#errorMessage').text(response.message || 'Error al guardar');
+                        $('#errorAlert').show();
+
+                        $('.modal-body-custom').animate({ scrollTop: 0 }, 300);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error AJAX:', {
+                        status: xhr.status,
+                        statusText: xhr.statusText,
+                        responseText: xhr.responseText,
+                        error: error
+                    });
+
+                    // Reactivar botón
+                    btnGuardar.prop('disabled', false);
+                    btnGuardar.html('<i class="bi bi-check-circle"></i> Guardar Estado');
+
+                    // Mostrar mensaje de error
+                    var errorMsg = 'Error desconocido';
+
+                    if (xhr.status === 400) {
+                        errorMsg = 'Error de validación. Verifique los datos ingresados.';
+                    } else if (xhr.status === 500) {
+                        errorMsg = 'Error en el servidor. Por favor, intente nuevamente.';
+                    } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMsg = xhr.responseJSON.message;
+                    } else if (xhr.responseText) {
+                        errorMsg = xhr.responseText;
+                    }
+
+                    $('#errorMessage').text(errorMsg);
+                    $('#errorAlert').show();
+
+                    $('.modal-body-custom').animate({ scrollTop: 0 }, 300);
+                }
+            });
+        });
+    });
+</script>

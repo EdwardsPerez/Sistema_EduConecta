@@ -1,0 +1,140 @@
+﻿@model EduConectaPeru.Models.ConfiguracionCosto
+
+@{
+    ViewData["Title"] = "Detalles de la Configuración";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-eye"></i> Detalles de la Configuración de Costo</h2>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Volver a la Lista
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-gear-fill"></i> Configuración #@Model.ConfigId
+                    @if (Model.IsActive)
+                    {
+                        <span class="badge bg-success float-end">
+                            <i class="bi bi-check-circle"></i> Activa
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary float-end">
+                            <i class="bi bi-dash-circle"></i> Desactivada
+                        </span>
+                    }
+                </h4>
+            </div>
+            <div class="card-body">
+
+                <!-- Información General -->
+                <div class="card mb-3">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="bi bi-info-circle"></i> Información General</h5>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row">
+                            <dt class="col-sm-4"><i class="bi bi-calendar"></i> Año Escolar:</dt>
+                            <dd class="col-sm-8"><strong class="fs-5">@Model.AnioEscolar</strong></dd>
+
+                            <dt class="col-sm-4"><i class="bi bi-tag"></i> Tipo de Costo:</dt>
+                            <dd class="col-sm-8">
+                                @if (Model.TipoCosto == "Matricula")
+                                {
+                                    <span class="badge bg-primary fs-6">
+                                        <i class="bi bi-file-earmark-check"></i> Matrícula
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-info fs-6">
+                                        <i class="bi bi-calendar-month"></i> Pensión
+                                    </span>
+                                }
+                            </dd>
+
+                            <dt class="col-sm-4"><i class="bi bi-book"></i> Grado:</dt>
+                            <dd class="col-sm-8"><strong>@Model.GradoSeccionId</strong></dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <!-- Información del Costo -->
+                <div class="card mb-3">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="bi bi-cash-coin"></i> Información del Costo</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <p class="text-muted mb-2">Monto Configurado</p>
+                        <h1 class="text-success mb-0">S/ @Model.Monto.ToString("N2")</h1>
+                    </div>
+                </div>
+
+                <!-- Información del Sistema -->
+                <div class="card mb-3">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="bi bi-gear"></i> Información del Sistema</h5>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4"><i class="bi bi-hash"></i> ID Configuración:</dt>
+                            <dd class="col-sm-8">@Model.ConfigId</dd>
+
+                            <dt class="col-sm-4"><i class="bi bi-calendar-check"></i> Fecha Creación:</dt>
+                            <dd class="col-sm-8">@Model.ConfigId.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                            <dt class="col-sm-4"><i class="bi bi-toggle-on"></i> Estado:</dt>
+                            <dd class="col-sm-8">
+                                @if (Model.IsActive)
+                                {
+                                    <span class="badge bg-success">Activa</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Desactivada</span>
+                                }
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Volver
+                    </a>
+                    <div>
+                        @if (Model.IsActive)
+                        {
+                            <a asp-action="Edit" asp-route-id="@Model.ConfigId" class="btn btn-warning">
+                                <i class="bi bi-pencil"></i> Editar
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@Model.ConfigId" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Desactivar
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="text-muted me-2">
+                                <i class="bi bi-info-circle"></i> Configuración desactivada
+                            </span>
+                            <form asp-action="Reactivar" asp-route-id="@Model.ConfigId" method="post" style="display: inline;">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-success" onclick="return confirm('¿Está seguro de reactivar esta configuración?');">
+                                    <i class="bi bi-arrow-counterclockwise"></i> Reactivar
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

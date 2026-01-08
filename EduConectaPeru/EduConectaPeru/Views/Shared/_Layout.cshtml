@@ -1,0 +1,437 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - EduConecta Perú</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        /* Layout con Sidebar */
+        .layout-wrapper {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar izquierdo */
+        .sidebar-main {
+            width: 280px;
+            background: linear-gradient(180deg, #1976D2 0%, #1565C0 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        /* Logo y header del sidebar */
+        .sidebar-header-main {
+            padding: 1.75rem 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .sidebar-logo-main {
+            max-width: 100px;
+            height: auto;
+            filter: brightness(0) invert(1);
+            margin-bottom: 0.75rem;
+        }
+
+        .sidebar-brand {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .sidebar-subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        /* Menú de navegación */
+        .sidebar-nav {
+            flex: 1;
+            padding: 1.5rem 0;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-section-title {
+            padding: 0.5rem 1.5rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            opacity: 0.7;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link-main {
+            display: flex;
+            align-items: center;
+            padding: 0.85rem 1.5rem;
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            font-size: 0.95rem;
+        }
+
+            .nav-link-main:hover {
+                background: rgba(255,255,255,0.12);
+                border-left-color: white;
+                color: white;
+            }
+
+            .nav-link-main.active {
+                background: rgba(255,255,255,0.2);
+                border-left-color: white;
+                color: white;
+                font-weight: 600;
+            }
+
+            .nav-link-main i {
+                margin-right: 0.85rem;
+                font-size: 1.15rem;
+                width: 24px;
+                text-align: center;
+            }
+
+        /* Usuario en sidebar */
+        .sidebar-user-main {
+            padding: 1.25rem 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(0,0,0,0.1);
+        }
+
+        .user-avatar-main {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .user-info-main {
+            flex: 1;
+        }
+
+        .user-name-main {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin: 0;
+            color: white;
+        }
+
+        .user-role-main {
+            font-size: 0.8rem;
+            opacity: 0.85;
+            margin: 0;
+        }
+
+        .btn-logout-main {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: background 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+            .btn-logout-main:hover {
+                background: rgba(255,255,255,0.2);
+            }
+
+        /* Contenido principal */
+        .main-content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #f5f7fa;
+            overflow: hidden;
+        }
+
+        /* Header superior */
+        .top-header-main {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .page-title-main {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .header-date {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Contenido scrolleable */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        /* Footer */
+        .footer-main {
+            background: white;
+            padding: 0.85rem 2rem;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.85rem;
+        }
+
+        /* Alertas */
+        .alert {
+            border-radius: 10px;
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Scrollbar personalizado */
+        .sidebar-main::-webkit-scrollbar,
+        .content-area::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar-main::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+        }
+
+        .sidebar-main::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+        }
+
+        .content-area::-webkit-scrollbar-track {
+            background: #f5f7fa;
+        }
+
+        .content-area::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 3px;
+        }
+
+    </style>
+</head>
+<body>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <div class="layout-wrapper">
+            <!-- Sidebar -->
+            <aside class="sidebar-main">
+                <!-- Logo y Header -->
+                <div class="sidebar-header-main">
+                    <a asp-controller="Home" asp-action="Index" style="text-decoration: none;">
+                        <img src="/images/logo-educonecta.png" alt="EduConecta Logo" class="sidebar-logo-main">
+                        <h5 class="sidebar-brand">EduConecta Perú</h5>
+                        <p class="sidebar-subtitle">Sistema Educativo</p>
+                    </a>
+                </div>
+
+                <!-- Navegación -->
+                <nav class="sidebar-nav">
+                    @if (User.IsInRole("Administrador") || User.IsInRole("Secretaria"))
+                    {
+                        <div class="nav-section">
+                            <div class="nav-section-title">GESTIÓN</div>
+                            <a asp-controller="Students" asp-action="Index" class="nav-link-main">
+                                <i class="bi bi-people"></i>
+                                <span>Estudiantes</span>
+                            </a>
+                            <a asp-controller="LegalGuardians" asp-action="Index" class="nav-link-main">
+                                <i class="bi bi-person-hearts"></i>
+                                <span>Apoderados</span>
+                            </a>
+                            <a asp-controller="Docentes" asp-action="Index" class="nav-link-main">
+                                <i class="bi bi-person-badge"></i>
+                                <span>Docentes</span>
+                            </a>
+                            <a asp-controller="Matriculas" asp-action="Index" class="nav-link-main">
+                                <i class="bi bi-book"></i>
+                                <span>Matrículas</span>
+                            </a>
+                            <a asp-controller="GradoSecciones" asp-action="Index" class="nav-link-main">
+                                <i class="bi bi-grid-3x3"></i>
+                                <span>Grados/Secciones</span>
+                            </a>
+                            <a asp-controller="Horarios" asp-action="Index" class="nav-link-main">
+                                <i class="bi bi-clock"></i>
+                                <span>Horarios</span>
+                            </a>
+                        </div>
+
+                        <div class="nav-section">
+                            <div class="nav-section-title">PAGOS</div>
+                            <a asp-controller="Quotas" asp-action="Index" class="nav-link-main">
+                                <i class="bi bi-cash-coin"></i>
+                                <span>Cuotas</span>
+                            </a>
+                            <a asp-controller="Payments" asp-action="Index" class="nav-link-main">
+                                <i class="bi bi-credit-card"></i>
+                                <span>Pagos</span>
+                            </a>
+                            <a asp-controller="Banks" asp-action="Index" class="nav-link-main">
+                                <i class="bi bi-bank"></i>
+                                <span>Bancos</span>
+                            </a>
+                            <a asp-controller="PaymentTypes" asp-action="Index" class="nav-link-main">
+                                <i class="bi bi-cash-stack"></i>
+                                <span>Tipos de Pago</span>
+                            </a>
+                            <a asp-controller="PaymentStatus" asp-action="Index" class="nav-link-main">
+                                <i class="bi bi-check-circle"></i>
+                                <span>Estados de Pago</span>
+                            </a>
+                        </div>
+
+                        <div class="nav-section">
+                            <div class="nav-section-title">OTROS</div>
+                            <a asp-controller="CursosVacacionales" asp-action="Index" class="nav-link-main">
+                                <i class="bi bi-sun"></i>
+                                <span>Cursos Vacacionales</span>
+                            </a>
+                            <a asp-controller="InscripcionesCursosVacacionales" asp-action="Index" class="nav-link-main">
+                                <i class="bi bi-clipboard-check"></i>
+                                <span>Inscripciones</span>
+                            </a>
+                            <a asp-controller="Reportes" asp-action="Index" class="nav-link-main">
+                                <i class="bi bi-file-earmark-pdf"></i>
+                                <span>Reportes</span>
+                            </a>
+                        </div>
+                    }
+
+                    @if (User.IsInRole("Apoderado"))
+                    {
+                        <div class="nav-section">
+                            <div class="nav-section-title">MI PANEL</div>
+                            <a asp-controller="ApoderadoDashboard" asp-action="Index"
+                               class="nav-link-main @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" && ViewContext.RouteData.Values["controller"]?.ToString() == "ApoderadoDashboard" ? "active" : "")">
+                                <i class="bi bi-speedometer2"></i>
+                                <span>Dashboard</span>
+                            </a>
+                            <a asp-controller="ApoderadoDashboard" asp-action="MisEstudiantes"
+                               class="nav-link-main @(ViewContext.RouteData.Values["action"]?.ToString() == "MisEstudiantes" ? "active" : "")">
+                                <i class="bi bi-people"></i>
+                                <span>Mis Estudiantes</span>
+                            </a>
+                            <a asp-controller="ApoderadoDashboard" asp-action="CuotasPendientes"
+                               class="nav-link-main @(ViewContext.RouteData.Values["action"]?.ToString() == "CuotasPendientes" ? "active" : "")">
+                                <i class="bi bi-receipt"></i>
+                                <span>Mis Cuotas</span>
+                            </a>
+                        </div>
+                    
+                    }
+                </nav>
+
+                <!-- Usuario -->
+                <div class="sidebar-user-main">
+                    <div class="user-avatar-main">
+                        <i class="bi bi-person-circle"></i>
+                    </div>
+                    <div class="user-info-main">
+                        <p class="user-name-main">@User.Identity.Name</p>
+                        <p class="user-role-main">@(User.IsInRole("Administrador") ? "Administrador" : User.IsInRole("Secretaria") ? "Secretaria" : "Apoderado")</p>
+                    </div>
+                    <form asp-controller="Account" asp-action="Logout" method="post" style="margin: 0;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn-logout-main" title="Cerrar Sesión">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </button>
+                    </form>
+                </div>
+            </aside>
+
+            <!-- Contenido Principal -->
+            <div class="main-content-wrapper">
+                <!-- Header Superior -->
+                <header class="top-header-main">
+                    <h1 class="page-title-main">@ViewData["Title"]</h1>
+                    <div class="header-date">
+                        <i class="bi bi-calendar3"></i>
+                        <span>@DateTime.Now.ToString("dddd, dd MMMM yyyy", new System.Globalization.CultureInfo("es-PE"))</span>
+                    </div>
+                </header>
+
+                <!-- Contenido -->
+                <main class="content-area">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    @RenderBody()
+                </main>
+
+                <!-- Footer -->
+                <footer class="footer-main">
+                    &copy; 2025 EduConecta Perú - Sistema de Gestión Educativa | Desarrollado con ❤️
+                </footer>
+            </div>
+        </div>
+    }
+    else
+    {
+        @RenderBody()
+    }
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

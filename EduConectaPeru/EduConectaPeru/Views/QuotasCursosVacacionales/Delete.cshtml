@@ -1,0 +1,277 @@
+﻿@model EduConectaPeru.Models.QuotaCursoVacacional
+
+@{
+    Layout = null;
+}
+
+<style>
+    .alert-warning-modal {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border: none;
+        border-radius: 8px;
+        color: #856404;
+        padding: 1rem;
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: start;
+        gap: 0.85rem;
+        font-size: 0.9rem;
+    }
+
+        .alert-warning-modal i {
+            font-size: 1.4rem;
+            margin-top: 0.1rem;
+        }
+
+    .confirmation-text {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 1.25rem;
+        text-align: center;
+    }
+
+    .cuota-info-box {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1.25rem;
+        margin-bottom: 1.25rem;
+        border-left: 4px solid #e74c3c;
+    }
+
+    .info-item-delete {
+        display: flex;
+        padding: 0.65rem 0;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+        .info-item-delete:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .info-item-delete:first-child {
+            padding-top: 0;
+        }
+
+    .info-label-delete {
+        font-weight: 600;
+        color: #7f8c8d;
+        min-width: 140px;
+        font-size: 0.9rem;
+    }
+
+    .info-value-delete {
+        color: #2c3e50;
+        font-size: 0.9rem;
+        flex: 1;
+    }
+
+        .info-value-delete strong {
+            color: #e74c3c;
+        }
+
+        .info-value-delete i {
+            margin-right: 0.35rem;
+        }
+
+    .alert-info-modal {
+        background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+        border: none;
+        border-radius: 8px;
+        color: #0c5460;
+        padding: 1rem;
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: start;
+        gap: 0.85rem;
+        font-size: 0.9rem;
+    }
+
+        .alert-info-modal i {
+            font-size: 1.4rem;
+            margin-top: 0.1rem;
+        }
+
+    .alert-info-payment {
+        background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+        border: none;
+        border-radius: 8px;
+        color: #0c5460;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: start;
+        gap: 0.85rem;
+        font-size: 0.9rem;
+    }
+
+    .btn-cancel-delete {
+        background: #95a5a6;
+        border: none;
+        padding: 0.65rem 1.75rem;
+        border-radius: 6px;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-cancel-delete:hover {
+            background: #7f8c8d;
+        }
+
+    .btn-confirm-delete {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        border: none;
+        padding: 0.65rem 1.75rem;
+        border-radius: 6px;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3);
+    }
+
+        .btn-confirm-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+
+ 
+</style>
+
+<!-- Alerta de advertencia -->
+<div class="alert-warning-modal">
+    <i class="bi bi-info-circle-fill"></i>
+    <div>
+        <strong>Atención:</strong> Está a punto de desactivar esta cuota.
+        El registro <strong>NO se eliminará</strong> de la base de datos, pero quedará marcado como inactivo.
+    </div>
+</div>
+
+<!-- Texto de confirmación -->
+<p class="confirmation-text">
+    ¿Está seguro que desea desactivar la siguiente cuota?
+</p>
+
+<!-- Información de la Cuota -->
+<div class="cuota-info-box">
+    <div class="info-item-delete">
+        <div class="info-label-delete">Curso:</div>
+        <div class="info-value-delete"><strong>@Model.Inscripcion?.CursoVacacional?.NombreCurso</strong></div>
+    </div>
+
+    <div class="info-item-delete">
+        <div class="info-label-delete">Estudiante:</div>
+        <div class="info-value-delete">
+            <i class="bi bi-person"></i>
+            <strong>@Model.Student?.NombreCompleto</strong>
+            <br>
+            <small style="color: #7f8c8d;">DNI: @Model.Inscripcion?.Student?.DNI</small>
+        </div>
+    </div>
+
+    <div class="info-item-delete">
+        <div class="info-label-delete">Apoderado:</div>
+        <div class="info-value-delete">
+            <i class="bi bi-person-heart"></i>
+            @Model.Inscripcion?.LegalGuardian?.NombreCompleto
+        </div>
+    </div>
+
+    <div class="info-item-delete">
+        <div class="info-label-delete">Período:</div>
+        <div class="info-value-delete">
+            <i class="bi bi-calendar"></i>
+            <strong>@Model.Mes @Model.Anio</strong>
+        </div>
+    </div>
+
+    <div class="info-item-delete">
+        <div class="info-label-delete">Vencimiento:</div>
+        <div class="info-value-delete">
+            <i class="bi bi-calendar-x"></i>
+            @Model.FechaVencimiento.ToString("dd/MM/yyyy")
+        </div>
+    </div>
+
+    <div class="info-item-delete">
+        <div class="info-label-delete">Monto:</div>
+        <div class="info-value-delete">
+            <i class="bi bi-cash"></i>
+            <strong>S/ @Model.Monto.ToString("N2")</strong>
+        </div>
+    </div>
+
+    <div class="info-item-delete">
+        <div class="info-label-delete">Estado de Pago:</div>
+        <div class="info-value-delete">
+            @if (Model.PaymentStatus?.StatusName == "Pagado")
+            {
+                <span class="badge" style="background: #27ae60; color: white;">
+                    <i class="bi bi-check-circle-fill"></i> Pagado
+                </span>
+            }
+            else
+            {
+                <span class="badge" style="background: #f39c12; color: white;">
+                    <i class="bi bi-clock-fill"></i> @Model.PaymentStatus?.StatusName
+                </span>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Nota si está pagada -->
+@if (Model.PaymentStatus?.StatusName == "Pagado")
+{
+    <div class="alert-info-payment">
+        <i class="bi bi-info-circle-fill"></i>
+        <div>
+            <strong>Nota:</strong> Esta cuota ya fue pagada. Al desactivarla, el pago registrado permanecerá en el sistema.
+        </div>
+    </div>
+}
+
+<!-- Nota informativa -->
+<div class="alert-info-modal">
+    <i class="bi bi-lightbulb-fill"></i>
+    <div>
+        <strong>Nota:</strong> Podrá reactivar esta cuota posteriormente desde la lista principal usando el botón de reactivación <i class="bi bi-arrow-counterclockwise"></i>.
+    </div>
+</div>
+
+<!-- Formulario de confirmación -->
+<form asp-action="Delete" method="post" id="deleteCuotaForm">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="QuotaVacacionalId" />
+
+    <div class="modal-footer">
+        <button type="button" class="btn-cancel-delete" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle"></i>
+            Cancelar
+        </button>
+        <button type="submit" class="btn-confirm-delete">
+            <i class="bi bi-trash-fill"></i>
+            Confirmar Desactivación
+        </button>
+    </div>
+</form>
+
+<script>
+    $('#deleteCuotaForm').on('submit', function(e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function(result) {
+                $('#deleteModal').modal('hide');
+                location.reload();
+            },
+            error: function(xhr) {
+                alert('Error al desactivar la cuota. Intente nuevamente.');
+            }
+        });
+    });
+</script>

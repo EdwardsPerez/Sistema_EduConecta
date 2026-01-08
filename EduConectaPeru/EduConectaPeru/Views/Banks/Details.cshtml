@@ -1,0 +1,221 @@
+﻿@model EduConectaPeru.Models.Bank
+@{
+    Layout = null;
+}
+
+<style>
+    .modal-header {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+        border: none;
+        padding: 20px 30px;
+    }
+
+        .modal-header h5 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+    .modal-body {
+        padding: 30px;
+    }
+
+    .bank-header {
+        text-align: center;
+        padding: 20px;
+        background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+        border-radius: 15px;
+        margin-bottom: 25px;
+    }
+
+    .bank-icon-large {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 2rem;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+    }
+
+    .bank-header h4 {
+        margin: 0;
+        color: #1976D2;
+        font-weight: 700;
+    }
+
+    .detail-section {
+        margin-bottom: 25px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 15px;
+        border-left: 4px solid #1976D2;
+    }
+
+    .detail-section-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+        color: #1976D2;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+    .detail-label {
+        font-weight: 600;
+        color: #495057;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .detail-value {
+        color: #212529;
+        text-align: right;
+    }
+
+    .badge {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .badge-active {
+        background: linear-gradient(135deg, #42A5F5 0%, #2196F3 100%);
+        color: white;
+    }
+
+    .badge-inactive {
+        background: linear-gradient(135deg, #64B5F6 0%, #42A5F5 100%);
+        color: white;
+    }
+
+    .info-box {
+        background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+        border-left: 4px solid #1976D2;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+
+        .info-box i {
+            color: #1976D2;
+            font-size: 1.2rem;
+        }
+
+        .info-box p {
+            margin: 0;
+            color: #1976D2;
+            font-weight: 500;
+        }
+</style>
+
+<div class="modal-header">
+    <h5><i class="bi bi-eye-fill"></i> Detalles del Banco</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+    <div class="bank-header">
+        <div class="bank-icon-large">
+            <i class="bi bi-bank"></i>
+        </div>
+        <h4>@Model.BankName</h4>
+        @if (Model.IsActive)
+        {
+            <span class="badge badge-active" style="margin-top: 10px;">
+                <i class="bi bi-check-circle"></i> Activo
+            </span>
+        }
+        else
+        {
+            <span class="badge badge-inactive" style="margin-top: 10px;">
+                <i class="bi bi-x-circle"></i> Inactivo
+            </span>
+        }
+    </div>
+
+    <div class="detail-section">
+        <div class="detail-section-title">
+            <i class="bi bi-bank"></i>
+            <span>Información del Banco</span>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-hash"></i> ID Banco:
+            </div>
+            <div class="detail-value">
+                <strong>#@Model.BankId</strong>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-bank"></i> Nombre del Banco:
+            </div>
+            <div class="detail-value">
+                <strong>@Model.BankName</strong>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-toggle-on"></i> Estado:
+            </div>
+            <div class="detail-value">
+                @if (Model.IsActive)
+                {
+                    <span class="badge badge-active">
+                        <i class="bi bi-check-circle"></i> Activo
+                    </span>
+                }
+                else
+                {
+                    <span class="badge badge-inactive">
+                        <i class="bi bi-x-circle"></i> Inactivo
+                    </span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <p>
+            <i class="bi bi-info-circle-fill"></i>
+            <strong>Información:</strong> Este banco está disponible para procesar transacciones de pago en el sistema.
+        </p>
+    </div>
+</div>
+
+<div class="modal-footer" style="border-top: 1px solid #dee2e6; padding: 20px 30px;">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        <i class="bi bi-x-circle"></i> Cerrar
+    </button>
+</div>

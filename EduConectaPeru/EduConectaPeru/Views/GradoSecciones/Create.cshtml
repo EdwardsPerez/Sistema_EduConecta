@@ -1,0 +1,238 @@
+﻿@model EduConectaPeru.Models.GradoSeccion
+
+@{
+    Layout = null;
+}
+
+<style>
+    .modal-header-custom {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+        border-radius: 15px 15px 0 0;
+        padding: 20px 25px;
+    }
+
+    .modal-body-custom {
+        padding: 30px;
+    }
+
+    .form-section {
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #f1f3f5;
+    }
+
+        .form-section:last-child {
+            border-bottom: none;
+        }
+
+    .form-section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .form-section-title i {
+            color: #1976D2;
+            font-size: 1.3rem;
+        }
+
+    .form-label-custom {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+    }
+
+    .form-control-custom {
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+    }
+
+        .form-control-custom:focus {
+            border-color: #1976D2;
+            box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.15);
+        }
+
+    .btn-cancel {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-cancel:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+    .btn-save {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(25, 118, 210, 0.4);
+    }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(25, 118, 210, 0.6);
+            color: white;
+        }
+
+    .text-danger {
+        font-size: 0.875rem;
+        margin-top: 5px;
+    }
+
+    .info-box {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-left: 4px solid #2196f3;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="modal-header modal-header-custom">
+    <h5 class="modal-title">
+        <i class="bi bi-plus-circle"></i> Nuevo Grado/Sección
+    </h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+</div>
+
+<form id="createForm" asp-action="Create" method="post">
+    <div class="modal-body modal-body-custom">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="info-box">
+            <i class="bi bi-info-circle"></i>
+            <strong>Información:</strong> Un grado/sección representa una clase específica (ej: 1° Primaria - Sección A).
+        </div>
+
+        <!-- Sección: Información del Grado -->
+        <div class="form-section">
+            <div class="form-section-title">
+                <i class="bi bi-mortarboard"></i>
+                <span>Información del Grado</span>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Grado" class="form-label-custom">
+                        <i class="bi bi-mortarboard-fill"></i> Grado
+                    </label>
+                    <select asp-for="Grado" class="form-control form-control-custom">
+                        <option value="">Seleccione un grado...</option>
+                        <option value="1° Primaria">1° Primaria</option>
+                        <option value="2° Primaria">2° Primaria</option>
+                        <option value="3° Primaria">3° Primaria</option>
+                        <option value="4° Primaria">4° Primaria</option>
+                        <option value="5° Primaria">5° Primaria</option>
+                        <option value="6° Primaria">6° Primaria</option>
+                        <option value="1° Secundaria">1° Secundaria</option>
+                        <option value="2° Secundaria">2° Secundaria</option>
+                        <option value="3° Secundaria">3° Secundaria</option>
+                        <option value="4° Secundaria">4° Secundaria</option>
+                        <option value="5° Secundaria">5° Secundaria</option>
+                    </select>
+                    <span asp-validation-for="Grado" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Seccion" class="form-label-custom">
+                        <i class="bi bi-grid-3x3-gap"></i> Sección
+                    </label>
+                    <select asp-for="Seccion" class="form-control form-control-custom">
+                        <option value="">Seleccione una sección...</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                    </select>
+                    <span asp-validation-for="Seccion" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección: Detalles Administrativos -->
+        <div class="form-section">
+            <div class="form-section-title">
+                <i class="bi bi-calendar-check"></i>
+                <span>Detalles Administrativos</span>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="AnioEscolar" class="form-label-custom">
+                        <i class="bi bi-calendar"></i> Año Escolar
+                    </label>
+                    <input asp-for="AnioEscolar" type="number" class="form-control form-control-custom" placeholder="2025" min="2020" max="2030" />
+                    <span asp-validation-for="AnioEscolar" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Capacidad" class="form-label-custom">
+                        <i class="bi bi-people"></i> Capacidad Máxima
+                    </label>
+                    <input asp-for="Capacidad" type="number" class="form-control form-control-custom" placeholder="30" min="1" max="50" />
+                    <span asp-validation-for="Capacidad" class="text-danger"></span>
+                    <small class="text-muted">Número máximo de estudiantes permitidos (1-50)</small>
+                </div>
+            </div>
+        </div>
+
+        <input type="hidden" asp-for="IsActive" value="true" />
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle"></i> Cancelar
+        </button>
+        <button type="submit" class="btn btn-save">
+            <i class="bi bi-check-circle"></i> Guardar Grado/Sección
+        </button>
+    </div>
+</form>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Establecer año actual por defecto
+        var currentYear = new Date().getFullYear();
+        $('input[name="AnioEscolar"]').val(currentYear);
+
+        $('#createForm').on('submit', function (e) {
+            e.preventDefault();
+
+            if (!$(this).valid()) {
+                return false;
+            }
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function () {
+                    $('#createModal').modal('hide');
+                    location.reload();
+                },
+                error: function (xhr) {
+                    alert('Error al guardar: ' + (xhr.responseText || 'Error desconocido'));
+                }
+            });
+        });
+    });
+</script>

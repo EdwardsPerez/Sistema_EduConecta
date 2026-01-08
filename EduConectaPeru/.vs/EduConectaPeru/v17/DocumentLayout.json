@@ -1,0 +1,54 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\User\\Desktop\\EduConectaPeru\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{7B22EF58-104C-4D95-A882-5AEC05F630F9}|EduConectaPeru\\EduConectaPeru.csproj|c:\\users\\user\\desktop\\educonectaperu\\educonectaperu\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{7B22EF58-104C-4D95-A882-5AEC05F630F9}|EduConectaPeru\\EduConectaPeru.csproj|solutionrelative:educonectaperu\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7B22EF58-104C-4D95-A882-5AEC05F630F9}|EduConectaPeru\\EduConectaPeru.csproj|c:\\users\\user\\desktop\\educonectaperu\\educonectaperu\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{7B22EF58-104C-4D95-A882-5AEC05F630F9}|EduConectaPeru\\EduConectaPeru.csproj|solutionrelative:educonectaperu\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\EduConectaPeru\\EduConectaPeru\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "EduConectaPeru\\Views\\Home\\Index.cshtml",
+              "ToolTip": "C:\\Users\\User\\Desktop\\EduConectaPeru\\EduConectaPeru\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "EduConectaPeru\\Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-11T16:59:08.218Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\EduConectaPeru\\EduConectaPeru\\appsettings.json",
+              "RelativeDocumentMoniker": "EduConectaPeru\\appsettings.json",
+              "ToolTip": "C:\\Users\\User\\Desktop\\EduConectaPeru\\EduConectaPeru\\appsettings.json",
+              "RelativeToolTip": "EduConectaPeru\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-12-11T15:38:49.328Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

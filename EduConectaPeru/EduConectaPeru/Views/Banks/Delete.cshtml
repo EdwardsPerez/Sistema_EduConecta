@@ -1,0 +1,207 @@
+﻿@model EduConectaPeru.Models.Bank
+@{
+    Layout = null;
+}
+
+<style>
+    .modal-header {
+        background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+        color: white;
+        border: none;
+        padding: 20px 30px;
+    }
+
+        .modal-header h5 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+    .modal-body {
+        padding: 30px;
+    }
+
+    .alert-warning {
+        background: linear-gradient(135deg, #FFF9C4 0%, #FFF59D 100%);
+        border-left: 4px solid #FFC107;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+        .alert-warning i {
+            color: #F57C00;
+            font-size: 1.5rem;
+        }
+
+        .alert-warning p {
+            margin: 0;
+            color: #F57C00;
+            font-weight: 600;
+        }
+
+    .preview-box {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .bank-icon-preview {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+
+    .preview-box h5 {
+        margin: 10px 0 5px 0;
+        color: #2c3e50;
+        font-weight: 700;
+    }
+
+    .info-box {
+        background: #f8f9fa;
+        border-left: 4px solid #6c757d;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+    .info-label {
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .info-value {
+        color: #212529;
+    }
+
+    .btn-confirm-delete {
+        background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-confirm-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+            color: white;
+        }
+</style>
+
+<div class="modal-header">
+    <h5><i class="bi bi-trash-fill"></i> Confirmar Desactivación</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<form id="deleteForm" asp-action="Delete" method="post">
+    <input type="hidden" asp-for="BankId" />
+
+    <div class="modal-body">
+        <div class="alert-warning">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <div>
+                    <p class="mb-1"><strong>¡Advertencia!</strong></p>
+                    <p class="mb-0" style="font-weight: 400;">
+                        Está a punto de desactivar este banco. Esta acción puede ser revertida posteriormente.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="preview-box">
+            <div class="bank-icon-preview">
+                <i class="bi bi-bank"></i>
+            </div>
+            <h5>@Model.BankName</h5>
+        </div>
+
+        <div class="info-box">
+            <div class="info-row">
+                <div class="info-label">
+                    <i class="bi bi-hash"></i> ID Banco:
+                </div>
+                <div class="info-value">
+                    <strong>#@Model.BankId</strong>
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">
+                    <i class="bi bi-bank"></i> Nombre del Banco:
+                </div>
+                <div class="info-value">
+                    @Model.BankName
+                </div>
+            </div>
+        </div>
+
+        <div style="background: #FFF3CD; border-left: 4px solid #FFC107; padding: 15px; border-radius: 10px;">
+            <p class="mb-0" style="color: #856404;">
+                <i class="bi bi-info-circle-fill"></i>
+                <strong>Nota:</strong> El banco quedará inactivo y no estará disponible para nuevos pagos. Puede reactivarlo en cualquier momento.
+            </p>
+        </div>
+    </div>
+
+    <div class="modal-footer" style="border-top: 1px solid #dee2e6; padding: 20px 30px;">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle"></i> Cancelar
+        </button>
+        <button type="submit" class="btn-confirm-delete">
+            <i class="bi bi-trash"></i> Confirmar Desactivación
+        </button>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function() {
+        $('#deleteForm').on('submit', function(e) {
+            e.preventDefault();
+
+            var formData = $(this).serialize();
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    $('#deleteModal').modal('hide');
+                    location.reload();
+                },
+                error: function() {
+                    alert('Error al desactivar el banco. Por favor, intente nuevamente.');
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,330 @@
+﻿@model IEnumerable<EduConectaPeru.Models.InscripcionCursoVacacional>
+@{
+    ViewData["Title"] = "Inscripciones Cursos Vacacionales";
+    var totalInscripciones = Model?.Count() ?? 0;
+    var inscripcionesActivas = Model?.Count(i => i.IsActive) ?? 0;
+    var inscripcionesInactivas = totalInscripciones - inscripcionesActivas;
+}
+
+<style>
+    .stats-card {
+        border-radius: 15px;
+        padding: 25px;
+        color: white;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stats-card h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+    .gradient-primary {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+    }
+
+    .gradient-success {
+        background: linear-gradient(135deg, #42A5F5 0%, #2196F3 100%);
+    }
+
+    .gradient-warning {
+        background: linear-gradient(135deg, #64B5F6 0%, #42A5F5 100%);
+    }
+
+    .table-modern {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+        .table-modern thead {
+            background: #f8f9fa;
+        }
+
+            .table-modern thead th {
+                border: none;
+                padding: 15px;
+                font-weight: 600;
+                color: #495057;
+            }
+
+        .table-modern tbody td {
+            padding: 15px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f3f5;
+        }
+
+        .table-modern tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+    .btn-action {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        margin: 0 2px;
+    }
+
+    .btn-view {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, #42A5F5 0%, #2196F3 100%);
+        color: white;
+    }
+
+    .btn-delete {
+        background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+        color: white;
+    }
+
+    .btn-reactivate {
+        background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
+        color: white;
+    }
+
+    .btn-primary-custom {
+        background: #fff;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    .badge-active {
+        background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.75rem;
+    }
+
+    .badge-inactive {
+        background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.75rem;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+        color: white;
+        box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+    }
+
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="mb-1"><i class="bi bi-clipboard-check"></i> Inscripciones Cursos Vacacionales</h2>
+            </div>
+            <button type="button" class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#createModal">
+                <i class="bi bi-plus-circle"></i> Nueva Inscripción
+            </button>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="stats-card gradient-primary">
+                <i class="bi bi-clipboard-data-fill" style="font-size: 2rem; opacity: 0.8;"></i>
+                <h3>@totalInscripciones</h3>
+                <p>Total Inscripciones</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card gradient-success">
+                <i class="bi bi-check-circle-fill" style="font-size: 2rem; opacity: 0.8;"></i>
+                <h3>@inscripcionesActivas</h3>
+                <p>Activas</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card gradient-warning">
+                <i class="bi bi-x-circle-fill" style="font-size: 2rem; opacity: 0.8;"></i>
+                <h3>@inscripcionesInactivas</h3>
+                <p>Inactivas</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-modern">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Estudiante</th>
+                    <th>Curso</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        var nombreEstudiante = item.Student?.Nombre ?? "";
+                        var apellidoEstudiante = item.Student?.Apellido ?? "";
+                        var inicialNombre = !string.IsNullOrEmpty(nombreEstudiante) ? nombreEstudiante.Substring(0, 1) : "";
+                        var inicialApellido = !string.IsNullOrEmpty(apellidoEstudiante) ? apellidoEstudiante.Substring(0, 1) : "";
+
+                        <tr>
+                            <td><strong>#@item.InscripcionId</strong></td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px; font-weight: 600;">
+                                        @inicialNombre@inicialApellido
+                                    </div>
+                                    <div>
+                                        <strong>@nombreEstudiante @apellidoEstudiante</strong>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@item.CursoVacacional?.NombreCurso</td>
+                            <td>@item.FechaInscripcion.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                @if (item.IsActive)
+                                {
+                                    <span class="badge badge-active"><i class="bi bi-check-circle"></i> Activa</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-inactive"><i class="bi bi-x-circle"></i> Inactiva</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <button class="btn btn-action btn-view" onclick="loadDetails(@item.InscripcionId)"><i class="bi bi-eye"></i></button>
+                                @if (item.IsActive)
+                                {
+                                    <button class="btn btn-action btn-edit" onclick="loadEdit(@item.InscripcionId)"><i class="bi bi-pencil"></i></button>
+                                    <button class="btn btn-action btn-delete" onclick="loadDelete(@item.InscripcionId)"><i class="bi bi-trash"></i></button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-action btn-reactivate" onclick="reactivate(@item.InscripcionId)"><i class="bi bi-arrow-clockwise"></i></button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center py-5">
+                            <i class="bi bi-inbox" style="font-size: 3rem; color: #dee2e6;"></i>
+                            <p class="text-muted mt-3">No hay inscripciones</p>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Create -->
+<div class="modal fade" id="createModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="createModalContent">
+            <div class="text-center p-5">
+                <div class="spinner-border text-primary"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Edit -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="editModalContent">
+            <div class="text-center p-5">
+                <div class="spinner-border text-primary"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Details -->
+<div class="modal fade" id="detailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="detailsModalContent">
+            <div class="text-center p-5">
+                <div class="spinner-border text-primary"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Delete -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" id="deleteModalContent">
+            <div class="text-center p-5">
+                <div class="spinner-border text-primary"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $('#createModal').on('show.bs.modal', function() {
+            $.get('@Url.Action("Create")', function(data) {
+                $('#createModalContent').html(data);
+            });
+        });
+
+        function loadEdit(id) {
+            $.get('@Url.Action("Edit")/' + id, function(data) {
+                $('#editModalContent').html(data);
+                $('#editModal').modal('show');
+            });
+        }
+
+        function loadDetails(id) {
+            $.get('@Url.Action("Details")/' + id, function(data) {
+                $('#detailsModalContent').html(data);
+                $('#detailsModal').modal('show');
+            });
+        }
+
+        function loadDelete(id) {
+            $.get('@Url.Action("Delete")/' + id, function(data) {
+                $('#deleteModalContent').html(data);
+                $('#deleteModal').modal('show');
+            });
+        }
+
+        function reactivate(id) {
+            if (confirm('¿Reactivar esta inscripción?')) {
+                var form = $('<form method="post" action="@Url.Action("Reactivar")/' + id + '"></form>');
+                form.append('@Html.AntiForgeryToken()');
+                $('body').append(form);
+                form.submit();
+            }
+        }
+    </script>
+}

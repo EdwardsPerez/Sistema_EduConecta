@@ -1,0 +1,419 @@
+﻿@model IEnumerable<EduConectaPeru.Models.Student>
+
+@{
+    ViewData["Title"] = "Mis Estudiantes";
+}
+
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+        color: white;
+        box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+    }
+
+        .page-header h1 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 2rem;
+        }
+
+    .btn-back {
+        background: white;
+        color: #1976D2;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: #1976D2;
+        }
+
+    .student-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        height: 100%;
+        border-left: 5px solid #1976D2;
+    }
+
+        .student-card.inactive {
+            border-left-color: #64B5F6;
+            opacity: 0.85;
+        }
+
+        .student-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+    .student-card-header {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        padding: 20px 25px;
+        color: white;
+    }
+
+        .student-card-header.inactive {
+            background: linear-gradient(135deg, #64B5F6 0%, #42A5F5 100%);
+        }
+
+        .student-card-header h5 {
+            margin: 0;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+    .student-avatar-header {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        border: 3px solid white;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 10px;
+    }
+
+    .badge-status {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .badge-activo {
+        background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
+        color: white;
+    }
+
+    .badge-inactivo {
+        background: linear-gradient(135deg, #64B5F6 0%, #42A5F5 100%);
+        color: white;
+    }
+
+    .badge-matriculado {
+        background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
+        color: white;
+    }
+
+    .badge-sin-matricula {
+        background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+        color: white;
+    }
+
+    .student-card-body {
+        padding: 25px;
+    }
+
+    .info-row {
+        display: flex;
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+    .info-label {
+        flex: 0 0 40%;
+        font-weight: 600;
+        color: #495057;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .info-value {
+        flex: 1;
+        color: #2c3e50;
+    }
+
+    .student-card-footer {
+        background: #f8f9fa;
+        padding: 15px 25px;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+
+        .summary-card h5 {
+            color: #1976D2;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #1976D2;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+    .summary-label {
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .summary-value {
+        font-weight: 700;
+        color: #1976D2;
+        font-size: 1.1rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #7f8c8d;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+
+        .empty-state i {
+            font-size: 5rem;
+            color: #bdc3c7;
+            margin-bottom: 20px;
+        }
+</style>
+
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="page-header d-flex justify-content-between align-items-center">
+        <div>
+            <h1><i class="bi bi-people"></i> Mis Estudiantes</h1>
+            <p class="mb-0" style="opacity: 0.9;">Información detallada de tus hijos registrados</p>
+        </div>
+        <a asp-action="Index" class="btn-back">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row g-4 mb-4">
+            @foreach (var estudiante in Model)
+            {
+                var matriculaActual = estudiante.Matriculas?.FirstOrDefault();
+                var isActive = estudiante.IsActive;
+
+                <div class="col-lg-6">
+                    <div class="student-card @(!isActive ? "inactive" : "")">
+                        <div class="student-card-header @(!isActive ? "inactive" : "")">
+                            <div class="text-center">
+                                @if (!string.IsNullOrEmpty(estudiante.Nombre) && !string.IsNullOrEmpty(estudiante.Apellido))
+                                {
+                                    <div class="student-avatar-header">
+                                        @estudiante.Nombre.Substring(0, 1)@estudiante.Apellido.Substring(0, 1)
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="student-avatar-header">
+                                        <i class="bi bi-person"></i>
+                                    </div>
+                                }
+                            </div>
+                            <h5>
+                                <span>
+                                    <i class="bi bi-person-circle"></i> @estudiante.NombreCompleto
+                                </span>
+                                @if (isActive)
+                                {
+                                    <span class="badge-status badge-activo">
+                                        <i class="bi bi-check-circle"></i> Activo
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge-status badge-inactivo">
+                                        <i class="bi bi-x-circle"></i> Inactivo
+                                    </span>
+                                }
+                            </h5>
+                        </div>
+
+                        <div class="student-card-body">
+                            <div class="info-row">
+                                <div class="info-label">
+                                    <i class="bi bi-credit-card"></i>
+                                    <span>DNI:</span>
+                                </div>
+                                <div class="info-value">
+                                    <strong>@estudiante.DNI</strong>
+                                </div>
+                            </div>
+
+                            <div class="info-row">
+                                <div class="info-label">
+                                    <i class="bi bi-calendar"></i>
+                                    <span>F. Nacimiento:</span>
+                                </div>
+                                <div class="info-value">
+                                    @estudiante.FechaNacimiento.ToString("dd/MM/yyyy")
+                                    <br>
+                                    <small class="text-muted">(@((DateTime.Now.Year - estudiante.FechaNacimiento.Year)) años)</small>
+                                </div>
+                            </div>
+
+                            @if (matriculaActual != null)
+                            {
+                                <div class="info-row">
+                                    <div class="info-label">
+                                        <i class="bi bi-book"></i>
+                                        <span>Grado:</span>
+                                    </div>
+                                    <div class="info-value">
+                                        @if (matriculaActual.GradoSeccion != null)
+                                        {
+                                            <strong style="color: #1976D2;">@matriculaActual.GradoSeccion.Grado - @matriculaActual.GradoSeccion.Seccion</strong>
+                                            <br>
+                                            <small class="text-muted">Año: @matriculaActual.AnioEscolar</small>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">No disponible</span>
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="info-row">
+                                    <div class="info-label">
+                                        <i class="bi bi-flag"></i>
+                                        <span>Estado:</span>
+                                    </div>
+                                    <div class="info-value">
+                                        @if (matriculaActual.Estado == "Activa")
+                                        {
+                                            <span class="badge-status badge-matriculado">
+                                                <i class="bi bi-check-circle"></i> Matriculado
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge-status badge-sin-matricula">
+                                                <i class="bi bi-exclamation-circle"></i> @matriculaActual.Estado
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="info-row">
+                                    <div class="info-label">
+                                        <i class="bi bi-exclamation-circle"></i>
+                                        <span>Estado:</span>
+                                    </div>
+                                    <div class="info-value">
+                                        <span class="badge-status badge-sin-matricula">
+                                            <i class="bi bi-exclamation-triangle"></i> Sin matrícula activa
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="info-row">
+                                <div class="info-label">
+                                    <i class="bi bi-phone"></i>
+                                    <span>Teléfono:</span>
+                                </div>
+                                <div class="info-value">
+                                    @if (!string.IsNullOrEmpty(estudiante.Telefono))
+                                    {
+                                        <strong>@estudiante.Telefono</strong>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No registrado</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="student-card-footer">
+                            <small class="text-muted">
+                                <i class="bi bi-calendar-check"></i> Registrado: @estudiante.FechaRegistro.ToString("dd/MM/yyyy")
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Resumen -->
+        <div class="summary-card">
+            <h5>
+                <i class="bi bi-info-circle"></i>
+                Resumen
+            </h5>
+
+            <div class="summary-item">
+                <div class="summary-label">
+                    <i class="bi bi-people"></i> Total de estudiantes:
+                </div>
+                <div class="summary-value">
+                    @Model.Count()
+                </div>
+            </div>
+
+            <div class="summary-item">
+                <div class="summary-label">
+                    <i class="bi bi-check-circle"></i> Estudiantes activos:
+                </div>
+                <div class="summary-value" style="color: #4CAF50;">
+                    @Model.Count(e => e.IsActive)
+                </div>
+            </div>
+
+            <div class="summary-item">
+                <div class="summary-label">
+                    <i class="bi bi-mortarboard"></i> Con matrícula activa:
+                </div>
+                <div class="summary-value" style="color: #1976D2;">
+                    @Model.Count(e => e.Matriculas != null && e.Matriculas.Any(m => m.IsActive))
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="bi bi-inbox"></i>
+            <h4 style="color: #2c3e50; margin: 20px 0 10px 0;">No tienes estudiantes registrados</h4>
+            <p>Contacta con la secretaría para registrar a tus estudiantes</p>
+        </div>
+    }
+</div>

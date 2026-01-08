@@ -1,0 +1,182 @@
+﻿@model EduConectaPeru.Models.Bank
+@{
+    Layout = null;
+}
+
+<style>
+    .modal-header {
+        background: linear-gradient(135deg, #42A5F5 0%, #2196F3 100%);
+        color: white;
+        border: none;
+        padding: 20px 30px;
+    }
+
+        .modal-header h5 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+    .modal-body {
+        padding: 30px;
+    }
+
+    .form-section {
+        margin-bottom: 25px;
+    }
+
+    .form-section-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #42A5F5;
+        color: #42A5F5;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        padding: 12px 15px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: #42A5F5;
+            box-shadow: 0 0 0 0.2rem rgba(66, 165, 245, 0.25);
+        }
+
+    .btn-update {
+        background: linear-gradient(135deg, #42A5F5 0%, #2196F3 100%);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+        .btn-update:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 165, 245, 0.4);
+            color: white;
+        }
+
+    .info-box {
+        background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+        border-left: 4px solid #42A5F5;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+
+        .info-box i {
+            color: #42A5F5;
+            font-size: 1.2rem;
+        }
+
+        .info-box p {
+            margin: 0;
+            color: #1976D2;
+            font-weight: 500;
+        }
+
+    .text-danger {
+        font-size: 0.85rem;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="modal-header">
+    <h5><i class="bi bi-pencil-fill"></i> Editar Banco</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<form id="editForm" asp-action="Edit" method="post">
+    <input type="hidden" asp-for="BankId" />
+    <input type="hidden" asp-for="IsActive" />
+
+    <div class="modal-body">
+        <div class="form-section">
+            <div class="form-section-title">
+                <i class="bi bi-bank"></i>
+                <span>Información del Banco</span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="BankName" class="form-label">
+                    <i class="bi bi-bank"></i> Nombre del Banco
+                </label>
+                <input asp-for="BankName" class="form-control" placeholder="Ej: Banco de Crédito del Perú, BBVA, Interbank" />
+                <span asp-validation-for="BankName" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <p>
+                <i class="bi bi-info-circle-fill"></i>
+                <strong>Editando:</strong> Banco @Model.BankName
+            </p>
+        </div>
+    </div>
+
+    <div class="modal-footer" style="border-top: 1px solid #dee2e6; padding: 20px 30px;">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle"></i> Cancelar
+        </button>
+        <button type="submit" class="btn-update" style="width: auto;">
+            <i class="bi bi-check-circle"></i> Actualizar Banco
+        </button>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function() {
+        $('#editForm').on('submit', function(e) {
+            e.preventDefault();
+
+            if (!$(this).valid()) {
+                return false;
+            }
+
+            var formData = $(this).serialize();
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    $('#editModal').modal('hide');
+                    location.reload();
+                },
+                error: function(xhr) {
+                    if (xhr.status === 400) {
+                        var errors = xhr.responseJSON;
+                        for (var key in errors) {
+                            $('span[data-valmsg-for="' + key + '"]').text(errors[key][0]);
+                        }
+                    } else {
+                        alert('Error al actualizar el banco. Por favor, intente nuevamente.');
+                    }
+                }
+            });
+        });
+    });
+</script>

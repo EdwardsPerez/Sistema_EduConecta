@@ -1,0 +1,312 @@
+﻿@model EduConectaPeru.Models.Student
+@{
+    Layout = null;
+}
+
+<style>
+    .modal-header {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+        border: none;
+        padding: 20px 30px;
+    }
+
+        .modal-header h5 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+    .modal-body {
+        padding: 30px;
+    }
+
+    .form-section {
+        margin-bottom: 25px;
+    }
+
+    .form-section-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #1976D2;
+        color: #1976D2;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 10px;
+        padding: 12px 15px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #1976D2;
+            box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.25);
+        }
+
+    .btn-save {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(25, 118, 210, 0.4);
+            color: white;
+        }
+
+    .info-box {
+        background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+        border-left: 4px solid #1976D2;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+
+        .info-box i {
+            color: #1976D2;
+            font-size: 1.2rem;
+        }
+
+        .info-box p {
+            margin: 0;
+            color: #1976D2;
+            font-weight: 500;
+        }
+
+    .text-danger {
+        font-size: 0.85rem;
+        margin-top: 5px;
+        display: block;
+    }
+</style>
+
+<div class="modal-header">
+    <h5><i class="bi bi-person-plus-fill"></i> Nuevo Estudiante</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<form id="createForm" asp-action="Create" method="post">
+    <div class="modal-body">
+        <div class="form-section">
+            <div class="form-section-title">
+                <i class="bi bi-person-fill"></i>
+                <span>Datos Personales</span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Nombre" class="form-label">
+                        <i class="bi bi-person"></i> Nombre
+                    </label>
+                    <input asp-for="Nombre" class="form-control" placeholder="Ingrese el nombre" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Apellido" class="form-label">
+                        <i class="bi bi-person"></i> Apellido
+                    </label>
+                    <input asp-for="Apellido" class="form-control" placeholder="Ingrese el apellido" />
+                    <span asp-validation-for="Apellido" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="DNI" class="form-label">
+                        <i class="bi bi-card-text"></i> DNI
+                    </label>
+                    <input asp-for="DNI" class="form-control" placeholder="Ej: 12345678" maxlength="8" />
+                    <span asp-validation-for="DNI" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="FechaNacimiento" class="form-label">
+                        <i class="bi bi-calendar"></i> Fecha de Nacimiento
+                    </label>
+                    <input asp-for="FechaNacimiento" type="date" class="form-control" />
+                    <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-section-title">
+                <i class="bi bi-telephone-fill"></i>
+                <span>Información de Contacto</span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Telefono" class="form-label">
+                        <i class="bi bi-telephone"></i> Teléfono (Opcional)
+                    </label>
+                    <input asp-for="Telefono" class="form-control" placeholder="Ej: 987654321" maxlength="9" />
+                    <span asp-validation-for="Telefono" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Email" class="form-label">
+                        <i class="bi bi-envelope"></i> Email (Opcional)
+                    </label>
+                    <input asp-for="Email" type="email" class="form-control" placeholder="ejemplo@email.com" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Direccion" class="form-label">
+                    <i class="bi bi-geo-alt"></i> Dirección (Opcional)
+                </label>
+                <textarea asp-for="Direccion" class="form-control" rows="2" placeholder="Ingrese la dirección completa"></textarea>
+                <span asp-validation-for="Direccion" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-section-title">
+                <i class="bi bi-person-badge-fill"></i>
+                <span>Información del Apoderado</span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="LegalGuardianId" class="form-label">
+                    <i class="bi bi-person-badge"></i> Seleccionar Apoderado
+                </label>
+                <select asp-for="LegalGuardianId" class="form-select">
+                    <option value="">-- Seleccione un apoderado --</option>
+                    @if (ViewBag.Apoderados != null)
+                    {
+                        foreach (var apoderado in ViewBag.Apoderados)
+                        {
+                            <option value="@apoderado.LegalGuardianId">
+                                @apoderado.Nombre @apoderado.Apellido - DNI: @apoderado.DNI
+                            </option>
+                        }
+                    }
+                </select>
+                <span asp-validation-for="LegalGuardianId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <p>
+                <i class="bi bi-info-circle-fill"></i>
+                <strong>Nota:</strong> Todos los campos marcados como obligatorios deben ser completados. El DNI debe tener 8 dígitos.
+            </p>
+        </div>
+    </div>
+
+    <div class="modal-footer" style="border-top: 1px solid #dee2e6; padding: 20px 30px;">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle"></i> Cancelar
+        </button>
+        <button type="submit" class="btn-save">
+            <i class="bi bi-check-circle"></i> Guardar Estudiante
+        </button>
+    </div>
+</form>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#createForm').on('submit', function(e) {
+            e.preventDefault();
+
+            // Limpiar errores previos
+            $('.text-danger').text('');
+
+            // Validar formulario
+            if (!$(this).valid()) {
+                return false;
+            }
+
+            // Deshabilitar botón para evitar doble clic
+            var btnGuardar = $('.btn-save');
+            var btnOriginal = btnGuardar.html();
+            btnGuardar.prop('disabled', true);
+            btnGuardar.html('<i class="bi bi-hourglass-split"></i> Guardando...');
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                dataType: 'json', // ✅ Esperar JSON
+                success: function(response) {
+                    console.log('Respuesta:', response);
+
+                    if (response.success) {
+                        // ✅ Éxito: cerrar modal y recargar
+                        $('#createModal').modal('hide');
+                        location.reload();
+                    } else {
+                        // ❌ Error: mostrar mensajes
+                        btnGuardar.prop('disabled', false);
+                        btnGuardar.html(btnOriginal);
+
+                        if (response.errors) {
+                            // Mostrar errores de validación
+                            for (var key in response.errors) {
+                                var errorSpan = $('span[data-valmsg-for="' + key + '"]');
+                                if (errorSpan.length) {
+                                    errorSpan.text(response.errors[key][0]);
+                                }
+                            }
+                        } else if (response.message) {
+                            alert(response.message);
+                        }
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Error AJAX:', xhr.status, xhr.responseText);
+
+                    // Reactivar botón
+                    btnGuardar.prop('disabled', false);
+                    btnGuardar.html(btnOriginal);
+
+                    if (xhr.status === 400 && xhr.responseJSON) {
+                        // Errores de validación
+                        if (xhr.responseJSON.errors) {
+                            for (var key in xhr.responseJSON.errors) {
+                                var errorSpan = $('span[data-valmsg-for="' + key + '"]');
+                                if (errorSpan.length) {
+                                    errorSpan.text(xhr.responseJSON.errors[key][0]);
+                                }
+                            }
+                        }
+                    } else {
+                        alert('Error al guardar el estudiante. Por favor, intente nuevamente.');
+                    }
+                }
+            });
+        });
+    });
+</script>

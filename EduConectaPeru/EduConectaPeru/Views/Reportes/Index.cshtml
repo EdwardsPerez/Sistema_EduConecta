@@ -1,0 +1,676 @@
+﻿@{
+    ViewData["Title"] = "Reportes";
+}
+
+<style>
+    .reportes-wrapper {
+        padding: 0;
+    }
+
+    .page-header-reportes {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 1.5rem;
+    }
+
+        .page-header-reportes h1 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 1.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .page-header-reportes h1 i {
+                color: #e74c3c;
+            }
+
+        .page-header-reportes p {
+            margin: 0.5rem 0 0 0;
+            color: #7f8c8d;
+            font-size: 0.95rem;
+        }
+
+    /* Alertas */
+    .alert-custom {
+        border-radius: 10px;
+        border: none;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+        .alert-custom i {
+            font-size: 1.3rem;
+        }
+
+    .alert-success-custom {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        color: #155724;
+    }
+
+    .alert-danger-custom {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        color: #721c24;
+    }
+
+    /* Grid de reportes */
+    .reportes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Tarjetas de reportes */
+    .reporte-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.75rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .reporte-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        .reporte-card.primary {
+            border-color: #1976D2;
+        }
+
+            .reporte-card.primary:hover {
+                box-shadow: 0 8px 20px rgba(25, 118, 210, 0.2);
+            }
+
+        .reporte-card.danger {
+            border-color: #e74c3c;
+        }
+
+            .reporte-card.danger:hover {
+                box-shadow: 0 8px 20px rgba(231, 76, 60, 0.2);
+            }
+
+        .reporte-card.warning {
+            border-color: #f39c12;
+        }
+
+            .reporte-card.warning:hover {
+                box-shadow: 0 8px 20px rgba(243, 156, 18, 0.2);
+            }
+
+        .reporte-card.info {
+            border-color: #3498db;
+        }
+
+            .reporte-card.info:hover {
+                box-shadow: 0 8px 20px rgba(52, 152, 219, 0.2);
+            }
+
+        .reporte-card.success {
+            border-color: #27ae60;
+        }
+
+            .reporte-card.success:hover {
+                box-shadow: 0 8px 20px rgba(39, 174, 96, 0.2);
+            }
+
+    /* Header de la tarjeta */
+    .reporte-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .reporte-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        flex-shrink: 0;
+    }
+
+        .reporte-icon.primary {
+            background: linear-gradient(135deg, rgba(25, 118, 210, 0.15) 0%, rgba(21, 101, 192, 0.15) 100%);
+            color: #1976D2;
+        }
+
+        .reporte-icon.danger {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.15) 0%, rgba(192, 57, 43, 0.15) 100%);
+            color: #e74c3c;
+        }
+
+        .reporte-icon.warning {
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.15) 0%, rgba(230, 126, 34, 0.15) 100%);
+            color: #f39c12;
+        }
+
+        .reporte-icon.info {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.15) 0%, rgba(41, 128, 185, 0.15) 100%);
+            color: #3498db;
+        }
+
+        .reporte-icon.success {
+            background: linear-gradient(135deg, rgba(39, 174, 96, 0.15) 0%, rgba(34, 153, 84, 0.15) 100%);
+            color: #27ae60;
+        }
+
+    .reporte-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+    }
+
+    .reporte-description {
+        color: #7f8c8d;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 1.25rem;
+        flex: 1;
+    }
+
+    /* Botones de reportes */
+    .btn-reporte {
+        width: 100%;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        border: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        font-size: 0.95rem;
+        cursor: pointer;
+    }
+
+        .btn-reporte.primary {
+            background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+        }
+
+            .btn-reporte.primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(25, 118, 210, 0.4);
+                color: white;
+            }
+
+        .btn-reporte.danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        }
+
+            .btn-reporte.danger:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(231, 76, 60, 0.4);
+                color: white;
+            }
+
+        .btn-reporte.warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+        }
+
+            .btn-reporte.warning:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(243, 156, 18, 0.4);
+                color: white;
+            }
+
+        .btn-reporte.info {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+            .btn-reporte.info:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(52, 152, 219, 0.4);
+                color: white;
+            }
+
+        .btn-reporte.success {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+        }
+
+            .btn-reporte.success:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(39, 174, 96, 0.4);
+                color: white;
+            }
+
+    /* Info card */
+    .info-card {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 12px;
+        padding: 1.75rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+        .info-card h5 {
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .info-card h5 i {
+                color: #3498db;
+            }
+
+        .info-card ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .info-card li {
+            color: #495057;
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+            .info-card li:last-child {
+                margin-bottom: 0;
+            }
+
+    /* Estilos para modales */
+    .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+
+    .modal-header {
+        border-radius: 12px 12px 0 0;
+        padding: 1.5rem;
+        border-bottom: none;
+    }
+
+        .modal-header h5 {
+            margin: 0;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+    .modal-body {
+        padding: 1.75rem;
+    }
+
+    .modal-footer {
+        border-top: 1px solid #e9ecef;
+        padding: 1.25rem 1.75rem;
+    }
+
+    .form-label-modal {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control-modal,
+    .form-select-modal {
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 0.65rem 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+        .form-control-modal:focus,
+        .form-select-modal:focus {
+            border-color: #1976D2;
+            box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.15);
+        }
+
+    .form-text-modal {
+        font-size: 0.85rem;
+        color: #7f8c8d;
+        margin-top: 0.35rem;
+    }
+
+</style>
+
+<div class="reportes-wrapper">
+    <!-- Header -->
+    <div class="page-header-reportes">
+        <h1>
+            <i class="bi bi-file-earmark-pdf-fill"></i>
+            Generación de Reportes PDF
+        </h1>
+        <p>Genere reportes detallados en formato PDF para análisis y documentación</p>
+    </div>
+
+    <!-- Alertas -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert-custom alert-success-custom alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>@TempData["SuccessMessage"]</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert-custom alert-danger-custom alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>@TempData["ErrorMessage"]</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Grid de Reportes -->
+    <div class="reportes-grid">
+        <!-- REPORTE 1: Comprobante de Pago -->
+        <div class="reporte-card primary">
+            <div class="reporte-header">
+                <div class="reporte-icon primary">
+                    <i class="bi bi-receipt-cutoff"></i>
+                </div>
+                <h3 class="reporte-title">Comprobante de Pago</h3>
+            </div>
+            <p class="reporte-description">
+                Genera un comprobante individual de pago para un estudiante específico con todos los detalles de la transacción.
+            </p>
+            <button type="button" class="btn-reporte primary" data-bs-toggle="modal" data-bs-target="#modalComprobante">
+                <i class="bi bi-file-earmark-pdf-fill"></i> Generar Reporte
+            </button>
+        </div>
+
+        <!-- REPORTE 2: Estudiantes Deudores -->
+        <div class="reporte-card danger">
+            <div class="reporte-header">
+                <div class="reporte-icon danger">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+                <h3 class="reporte-title">Estudiantes Deudores</h3>
+            </div>
+            <p class="reporte-description">
+                Lista completa de todos los estudiantes con cuotas pendientes de pago y montos adeudados.
+            </p>
+            <a href="@Url.Action("EstudiantesDeudores", "Reportes")" class="btn-reporte danger" target="_blank">
+                <i class="bi bi-file-earmark-pdf-fill"></i> Generar Reporte
+            </a>
+        </div>
+
+        <!-- REPORTE 3: Cuotas por Vencer -->
+        <div class="reporte-card warning">
+            <div class="reporte-header">
+                <div class="reporte-icon warning">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+                <h3 class="reporte-title">Cuotas por Vencer</h3>
+            </div>
+            <p class="reporte-description">
+                Reporte de cuotas que vencen en los próximos 7 días para seguimiento preventivo de pagos.
+            </p>
+            <a href="@Url.Action("CuotasPorVencer", "Reportes")" class="btn-reporte warning" target="_blank">
+                <i class="bi bi-file-earmark-pdf-fill"></i> Generar Reporte
+            </a>
+        </div>
+
+        <!-- REPORTE 4: Cuotas Vencidas -->
+        <div class="reporte-card danger">
+            <div class="reporte-header">
+                <div class="reporte-icon danger">
+                    <i class="bi bi-x-circle-fill"></i>
+                </div>
+                <h3 class="reporte-title">Cuotas Vencidas</h3>
+            </div>
+            <p class="reporte-description">
+                Lista de estudiantes morosos con cuotas vencidas y días de retraso en los pagos.
+            </p>
+            <a href="@Url.Action("CuotasVencidas", "Reportes")" class="btn-reporte danger" target="_blank">
+                <i class="bi bi-file-earmark-pdf-fill"></i> Generar Reporte
+            </a>
+        </div>
+
+        <!-- REPORTE 5: Estudiantes por Grado -->
+        <div class="reporte-card info">
+            <div class="reporte-header">
+                <div class="reporte-icon info">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <h3 class="reporte-title">Estudiantes por Grado</h3>
+            </div>
+            <p class="reporte-description">
+                Lista de estudiantes matriculados organizados por grado y sección con información detallada.
+            </p>
+            <button type="button" class="btn-reporte info" data-bs-toggle="modal" data-bs-target="#modalEstudiantesGrado">
+                <i class="bi bi-file-earmark-pdf-fill"></i> Generar Reporte
+            </button>
+        </div>
+
+        <!-- REPORTE 6: Historial de Pagos -->
+        <div class="reporte-card success">
+            <div class="reporte-header">
+                <div class="reporte-icon success">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+                <h3 class="reporte-title">Historial de Pagos</h3>
+            </div>
+            <p class="reporte-description">
+                Historial completo de pagos realizados por un estudiante específico con fechas y montos.
+            </p>
+            <button type="button" class="btn-reporte success" data-bs-toggle="modal" data-bs-target="#modalHistorialPagos">
+                <i class="bi bi-file-earmark-pdf-fill"></i> Generar Reporte
+            </button>
+        </div>
+
+        <!-- REPORTE 7: Resumen Financiero -->
+        <div class="reporte-card success">
+            <div class="reporte-header">
+                <div class="reporte-icon success">
+                    <i class="bi bi-graph-up-arrow"></i>
+                </div>
+                <h3 class="reporte-title">Resumen Financiero</h3>
+            </div>
+            <p class="reporte-description">
+                Resumen de ingresos mensuales con estadísticas detalladas y análisis financiero completo.
+            </p>
+            <button type="button" class="btn-reporte success" data-bs-toggle="modal" data-bs-target="#modalResumenFinanciero">
+                <i class="bi bi-file-earmark-pdf-fill"></i> Generar Reporte
+            </button>
+        </div>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="info-card">
+        <h5>
+            <i class="bi bi-info-circle-fill"></i>
+            Información sobre Reportes
+        </h5>
+        <ul>
+            <li><strong>Formato:</strong> Todos los reportes se generan en formato PDF de alta calidad</li>
+            <li><strong>Visualización:</strong> Los reportes se abren en una nueva pestaña del navegador</li>
+            <li><strong>Descarga:</strong> Puede descargar o imprimir los reportes directamente desde su navegador</li>
+            <li><strong>Datos:</strong> Los datos mostrados son en tiempo real y actualizados</li>
+            <li><strong>Marca de tiempo:</strong> Los reportes incluyen fecha y hora de generación</li>
+            <li><strong>Compatibilidad:</strong> Compatible con todos los navegadores modernos</li>
+        </ul>
+    </div>
+</div>
+
+<!-- MODAL: Comprobante de Pago -->
+<div class="modal fade" id="modalComprobante" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%); color: white;">
+                <h5>
+                    <i class="bi bi-receipt-cutoff"></i> Generar Comprobante de Pago
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="get" action="@Url.Action("ComprobantePago", "Reportes")" target="_blank">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="paymentIdComprobante" class="form-label-modal">ID del Pago *</label>
+                        <input type="number" class="form-control-modal form-control" id="paymentIdComprobante" name="paymentId" required min="1" placeholder="Ej: 1">
+                        <div class="form-text-modal">Ingrese el ID del pago para generar el comprobante</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-file-earmark-pdf-fill"></i> Generar PDF
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Estudiantes por Grado -->
+<div class="modal fade" id="modalEstudiantesGrado" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white;">
+                <h5>
+                    <i class="bi bi-people-fill"></i> Lista de Estudiantes por Grado
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="get" action="@Url.Action("EstudiantesPorGrado", "Reportes")" target="_blank">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="gradoSeccionId" class="form-label-modal">Grado/Sección</label>
+                        <input type="number" class="form-control-modal form-control" id="gradoSeccionId" name="gradoSeccionId" min="1" placeholder="Opcional">
+                        <div class="form-text-modal">Deje en blanco para generar reporte de todos los estudiantes</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-info">
+                        <i class="bi bi-file-earmark-pdf-fill"></i> Generar PDF
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Historial de Pagos por Estudiante -->
+<div class="modal fade" id="modalHistorialPagos" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #27ae60 0%, #229954 100%); color: white;">
+                <h5>
+                    <i class="bi bi-clock-history"></i> Historial de Pagos por Estudiante
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="get" action="@Url.Action("HistorialPagosPorEstudiante", "Reportes")" target="_blank">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="studentIdHistorial" class="form-label-modal">ID del Estudiante *</label>
+                        <input type="number" class="form-control-modal form-control" id="studentIdHistorial" name="studentId" required min="1" placeholder="Ej: 1">
+                        <div class="form-text-modal">Ingrese el ID del estudiante para ver su historial de pagos</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-file-earmark-pdf-fill"></i> Generar PDF
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Resumen Financiero Mensual -->
+<div class="modal fade" id="modalResumenFinanciero" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #27ae60 0%, #229954 100%); color: white;">
+                <h5>
+                    <i class="bi bi-graph-up-arrow"></i> Resumen Financiero Mensual
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="get" action="@Url.Action("ResumenFinancieroMensual", "Reportes")" target="_blank">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="mesResumen" class="form-label-modal">Mes *</label>
+                        <select class="form-select-modal form-select" id="mesResumen" name="mes" required>
+                            <option value="">Seleccione un mes</option>
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <option value="3">Marzo</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Mayo</option>
+                            <option value="6">Junio</option>
+                            <option value="7">Julio</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Septiembre</option>
+                            <option value="10">Octubre</option>
+                            <option value="11">Noviembre</option>
+                            <option value="12">Diciembre</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="anioResumen" class="form-label-modal">Año *</label>
+                        <input type="number" class="form-control-modal form-control" id="anioResumen" name="anio" required min="2024" max="2050" value="@DateTime.Now.Year">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-file-earmark-pdf-fill"></i> Generar PDF
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-ocultar alertas
+        setTimeout(function() {
+            $('.alert').fadeOut('slow');
+        }, 5000);
+
+        // Cerrar modales después de enviar
+        $('form').on('submit', function() {
+            setTimeout(function() {
+                $('.modal').modal('hide');
+            }, 500);
+        });
+    </script>
+}

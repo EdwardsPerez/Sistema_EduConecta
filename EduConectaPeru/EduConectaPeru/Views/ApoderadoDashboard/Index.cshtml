@@ -1,0 +1,642 @@
+﻿@model dynamic
+@{
+    ViewData["Title"] = "Mi Dashboard";
+    var estudiantes = Model.MisEstudiantes as List<EduConectaPeru.Models.Student>;
+    var cantidadEstudiantes = Model.CantidadEstudiantes;
+    var cantidadCuotas = Model.CantidadCuotasPendientes;
+    var totalDeuda = Model.TotalDeuda;
+    var proximosVenc = Model.ProximosVencimientos;
+    var cuotasVencidas = Model.CuotasVencidas;
+    var ultimasCuotas = Model.UltimasCuotas as List<EduConectaPeru.Models.Quota>;
+}
+
+<style>
+    .dashboard-header {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+        color: white;
+        box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+    }
+
+        .dashboard-header h2 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 2rem;
+        }
+
+        .dashboard-header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+
+    .stats-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .stats-card.card-blue::before {
+            background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        }
+
+        .stats-card.card-green::before {
+            background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
+        }
+
+        .stats-card.card-orange::before {
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+        }
+
+        .stats-card.card-red::before {
+            background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+        }
+
+    .stats-card-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .stats-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        color: white;
+        margin-bottom: 15px;
+    }
+
+        .stats-icon.icon-blue {
+            background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        }
+
+        .stats-icon.icon-green {
+            background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
+        }
+
+        .stats-icon.icon-orange {
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+        }
+
+        .stats-icon.icon-red {
+            background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+        }
+
+    .stats-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 10px 0 5px 0;
+    }
+
+    .stats-label {
+        color: #7f8c8d;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+
+    .chart-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        margin-bottom: 30px;
+        height: 100%;
+    }
+
+        .chart-card h5 {
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #1976D2;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+    .student-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        margin-bottom: 15px;
+        border-left: 4px solid #1976D2;
+    }
+
+        .student-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+        }
+
+    .student-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-right: 15px;
+    }
+
+    .cuota-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+        border-left: 4px solid #1976D2;
+    }
+
+        .cuota-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+
+        .cuota-card.vencida {
+            border-left-color: #FF6B6B;
+            background: linear-gradient(135deg, #FFF5F5 0%, #FFEBEE 100%);
+        }
+
+        .cuota-card.proxima {
+            border-left-color: #FF9800;
+            background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+        }
+
+    .btn-pagar {
+        background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
+        color: white;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-pagar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+            color: white;
+        }
+
+    .badge-status {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .badge-vencida {
+        background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+        color: white;
+    }
+
+    .badge-proxima {
+        background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+        color: white;
+    }
+
+    .badge-normal {
+        background: linear-gradient(135deg, #42A5F5 0%, #2196F3 100%);
+        color: white;
+    }
+
+    .section-title {
+        color: #2c3e50;
+        font-weight: 700;
+        font-size: 1.4rem;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .section-title i {
+            color: #1976D2;
+        }
+
+    .btn-view-all {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        width: 100%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+        .btn-view-all:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(25, 118, 210, 0.4);
+            color: white;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #7f8c8d;
+    }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #bdc3c7;
+            margin-bottom: 15px;
+        }
+</style>
+
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="dashboard-header">
+        <h2><i class="bi bi-house-door"></i> Bienvenido a tu Dashboard</h2>
+        <p>Gestiona los pagos y cuotas de tus hijos de forma rápida y sencilla</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="stats-card card-blue">
+                <div class="stats-card-content">
+                    <div class="stats-icon icon-blue">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <div class="stats-value">@cantidadEstudiantes</div>
+                    <div class="stats-label">Mis Estudiantes</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card card-orange">
+                <div class="stats-card-content">
+                    <div class="stats-icon icon-orange">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                    </div>
+                    <div class="stats-value">@cantidadCuotas</div>
+                    <div class="stats-label">Cuotas Pendientes</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card card-red">
+                <div class="stats-card-content">
+                    <div class="stats-icon icon-red">
+                        <i class="bi bi-calendar-x-fill"></i>
+                    </div>
+                    <div class="stats-value">@cuotasVencidas</div>
+                    <div class="stats-label">Cuotas Vencidas</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card card-green">
+                <div class="stats-card-content">
+                    <div class="stats-icon icon-green">
+                        <i class="bi bi-currency-dollar"></i>
+                    </div>
+                    <div class="stats-value">S/ @totalDeuda.ToString("N0")</div>
+                    <div class="stats-label">Deuda Total</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Columna Izquierda: Gráficos -->
+        <div class="col-lg-8">
+            <!-- Gráfico de Estado de Cuotas -->
+            <div class="chart-card">
+                <h5>
+                    <i class="bi bi-pie-chart-fill"></i>
+                    Estado de Cuotas
+                </h5>
+                <canvas id="chartEstadoCuotas" style="max-height: 300px;"></canvas>
+            </div>
+
+            <!-- Gráfico de Pagos por Mes -->
+            <div class="chart-card">
+                <h5>
+                    <i class="bi bi-bar-chart-fill"></i>
+                    Pagos Realizados (Últimos 6 meses)
+                </h5>
+                <canvas id="chartPagosMes" style="max-height: 300px;"></canvas>
+            </div>
+
+            <!-- Cuotas Pendientes -->
+            <div class="section-title mt-4">
+                <i class="bi bi-clock-history"></i>
+                <span>Próximas Cuotas a Vencer</span>
+            </div>
+
+            @if (ultimasCuotas != null && ultimasCuotas.Any())
+            {
+                foreach (var cuota in ultimasCuotas)
+                {
+                    var diasParaVencer = (cuota.FechaVencimiento - DateTime.Today).Days;
+                    var esVencida = diasParaVencer < 0;
+                    var esProxima = diasParaVencer >= 0 && diasParaVencer <= 7;
+                    var claseCard = esVencida ? "vencida" : (esProxima ? "proxima" : "");
+
+                    <div class="cuota-card @claseCard">
+                        <div class="row align-items-center">
+                            <div class="col-md-5">
+                                <strong style="color: #2c3e50; font-size: 1.1rem;">@cuota.Mes @cuota.Anio</strong>
+                                <br>
+                                <small class="text-muted">
+                                    <i class="bi bi-person"></i> @cuota.Student?.NombreCompleto
+                                </small>
+                            </div>
+                            <div class="col-md-2">
+                                <div style="font-size: 1.3rem; font-weight: 700; color: #2c3e50;">
+                                    S/ @cuota.Monto.ToString("N2")
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                @if (esVencida)
+                                {
+                                    <span class="badge-status badge-vencida">
+                                        <i class="bi bi-exclamation-circle"></i> Vencida hace @Math.Abs(diasParaVencer) días
+                                    </span>
+                                }
+                                else if (esProxima)
+                                {
+                                    <span class="badge-status badge-proxima">
+                                        <i class="bi bi-clock"></i> Vence en @diasParaVencer días
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge-status badge-normal">
+                                        <i class="bi bi-calendar-check"></i> @cuota.FechaVencimiento.ToString("dd/MM/yyyy")
+                                    </span>
+                                }
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <a href="@Url.Action("Index", "CarritoCompras")?quotaId=@cuota.QuotaId" class="btn-pagar">
+                                    <i class="bi bi-credit-card-fill"></i> Pagar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="empty-state">
+                    <i class="bi bi-check-circle"></i>
+                    <h5>¡Excelente!</h5>
+                    <p>No tienes cuotas pendientes en este momento</p>
+                </div>
+            }
+
+            <a asp-action="CuotasPendientes" class="btn-view-all mt-3">
+                <i class="bi bi-list-check"></i> Ver Todas las Cuotas Pendientes
+            </a>
+        </div>
+
+        <!-- Columna Derecha: Sidebar -->
+        <div class="col-lg-4">
+            <!-- Mis Estudiantes -->
+            <div class="section-title">
+                <i class="bi bi-people-fill"></i>
+                <span>Mis Estudiantes</span>
+            </div>
+
+            @if (estudiantes != null && estudiantes.Any())
+            {
+                foreach (var estudiante in estudiantes)
+                {
+                    <div class="student-card">
+                        <div class="d-flex align-items-center">
+                            @if (!string.IsNullOrEmpty(estudiante.Nombre) && !string.IsNullOrEmpty(estudiante.Apellido))
+                            {
+                                <div class="student-avatar">
+                                    @estudiante.Nombre.Substring(0, 1)@estudiante.Apellido.Substring(0, 1)
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="student-avatar">
+                                    <i class="bi bi-person"></i>
+                                </div>
+                            }
+                            <div>
+                                <strong style="color: #2c3e50; font-size: 1.1rem;">@estudiante.NombreCompleto</strong>
+                                <br>
+                                <small class="text-muted">
+                                    <i class="bi bi-card-text"></i> DNI: @estudiante.DNI
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <a asp-action="MisEstudiantes" class="btn-view-all mt-3">
+                    <i class="bi bi-arrow-right-circle"></i> Ver Todos los Estudiantes
+                </a>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>No tienes estudiantes registrados</p>
+                </div>
+            }
+
+            <!-- Acciones Rápidas -->
+            <div class="section-title mt-4">
+                <i class="bi bi-lightning-fill"></i>
+                <span>Acciones Rápidas</span>
+            </div>
+
+            <div class="d-grid gap-2">
+                <a asp-action="CuotasPendientes" class="btn btn-outline-primary" style="padding: 12px; border-radius: 10px; font-weight: 600;">
+                    <i class="bi bi-receipt"></i> Ver Cuotas Pendientes
+                </a>
+                <a asp-action="HistorialPagos" class="btn btn-outline-success" style="padding: 12px; border-radius: 10px; font-weight: 600;">
+                    <i class="bi bi-clock-history"></i> Historial de Pagos
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        // Gráfico de Estado de Cuotas (Dona)
+        const ctxEstado = document.getElementById('chartEstadoCuotas').getContext('2d');
+        const cuotasPendientesNormales = @(cantidadCuotas - cuotasVencidas - proximosVenc);
+
+        new Chart(ctxEstado, {
+            type: 'doughnut',
+            data: {
+                labels: ['Pendientes', 'Vencidas', 'Próximas (7 días)'],
+                datasets: [{
+                    data: [cuotasPendientesNormales, @cuotasVencidas, @proximosVenc],
+                    backgroundColor: [
+                        'rgba(25, 118, 210, 0.8)',
+                        'rgba(255, 107, 107, 0.8)',
+                        'rgba(255, 152, 0, 0.8)'
+                    ],
+                    borderWidth: 3,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            font: {
+                                size: 13,
+                                weight: '600'
+                            },
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                return context.label + ': ' + context.parsed + ' cuotas (' + percentage + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfico de Pagos por Mes (Barras)
+        const ctxPagos = document.getElementById('chartPagosMes').getContext('2d');
+
+        // Generar últimos 6 meses
+        const meses = [];
+        const pagos = [];
+        const hoy = new Date();
+
+        for (let i = 5; i >= 0; i--) {
+            const fecha = new Date(hoy.getFullYear(), hoy.getMonth() - i, 1);
+            const nombreMes = fecha.toLocaleDateString('es-ES', { month: 'short', year: 'numeric' });
+            meses.push(nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1));
+
+            // Simulación de datos (en producción vendría del servidor)
+            const montoPago = Math.random() * 500 + 200;
+            pagos.push(montoPago.toFixed(2));
+        }
+
+        new Chart(ctxPagos, {
+            type: 'bar',
+            data: {
+                labels: meses,
+                datasets: [{
+                    label: 'Pagos Realizados (S/)',
+                    data: pagos,
+                    backgroundColor: 'rgba(25, 118, 210, 0.7)',
+                    borderColor: 'rgba(25, 118, 210, 1)',
+                    borderWidth: 2,
+                    borderRadius: 10,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'S/ ' + value.toFixed(0);
+                            },
+                            font: {
+                                size: 12,
+                                weight: '600'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                size: 12,
+                                weight: '600'
+                            }
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                return 'Monto: S/ ' + parseFloat(context.parsed.y).toFixed(2);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

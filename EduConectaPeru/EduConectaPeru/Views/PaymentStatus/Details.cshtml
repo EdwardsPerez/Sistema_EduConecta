@@ -1,0 +1,159 @@
+﻿@model EduConectaPeru.Models.PaymentStatus
+
+@{
+    Layout = null;
+}
+
+<style>
+    .modal-header-custom {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+        border-radius: 15px 15px 0 0;
+        padding: 20px 25px;
+    }
+
+    .modal-body-custom {
+        padding: 30px;
+    }
+
+    .detail-section {
+        margin-bottom: 25px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border-left: 4px solid #1976D2;
+    }
+
+    .detail-section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .detail-section-title i {
+            color: #1976D2;
+            font-size: 1.3rem;
+        }
+
+    .detail-row {
+        display: flex;
+        padding: 10px 0;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+    .detail-label {
+        font-weight: 600;
+        color: #6c757d;
+        min-width: 180px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .detail-value {
+        color: #212529;
+        flex: 1;
+    }
+
+    .btn-close-custom {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-close-custom:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+    .info-box {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-left: 4px solid #2196f3;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+
+    .status-header {
+        text-align: center;
+        padding: 25px;
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        border-radius: 10px;
+        color: white;
+        margin-bottom: 25px;
+    }
+
+        .status-header h3 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .status-header p {
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+        }
+</style>
+
+<div class="modal-header modal-header-custom">
+    <h5 class="modal-title">
+        <i class="bi bi-eye"></i> Detalles del Estado de Pago
+    </h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+</div>
+
+<div class="modal-body modal-body-custom">
+    <!-- Header del Estado -->
+    <div class="status-header">
+        <h3>@Model.StatusName</h3>
+        <p>Estado de Pago</p>
+    </div>
+
+    <!-- Sección: Información del Estado -->
+    <div class="detail-section">
+        <div class="detail-section-title">
+            <i class="bi bi-info-circle"></i>
+            <span>Información del Estado</span>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-hash"></i> ID del Estado:
+            </div>
+            <div class="detail-value">
+                <strong>#@Model.StatusId</strong>
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-tag"></i> Nombre del Estado:
+            </div>
+            <div class="detail-value">
+                <strong>@Model.StatusName</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="info-box">
+        <i class="bi bi-info-circle"></i>
+        <strong>Información:</strong> Este estado de pago puede ser asignado a los pagos del sistema para clasificarlos.
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-close-custom" data-bs-dismiss="modal">
+        <i class="bi bi-x-circle"></i> Cerrar
+    </button>
+</div>

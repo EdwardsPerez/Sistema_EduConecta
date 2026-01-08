@@ -1,0 +1,232 @@
+﻿@model EduConectaPeru.Models.LegalGuardian
+
+@{
+    Layout = null;
+}
+
+<style>
+    .modal-header-custom {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+        border-radius: 15px 15px 0 0;
+        padding: 20px 25px;
+    }
+
+    .modal-body-custom {
+        padding: 30px;
+    }
+
+    .form-section {
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #f1f3f5;
+    }
+
+        .form-section:last-child {
+            border-bottom: none;
+        }
+
+    .form-section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .form-section-title i {
+            color: #1976D2;
+            font-size: 1.3rem;
+        }
+
+    .form-label-custom {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+    }
+
+    .form-control-custom {
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+    }
+
+        .form-control-custom:focus {
+            border-color: #1976D2;
+            box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.15);
+        }
+
+    .btn-cancel {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-cancel:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+    .btn-save {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(25, 118, 210, 0.4);
+    }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(25, 118, 210, 0.6);
+            color: white;
+        }
+
+    .text-danger {
+        font-size: 0.875rem;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="modal-header modal-header-custom">
+    <h5 class="modal-title">
+        <i class="bi bi-plus-circle"></i> Nuevo Apoderado
+    </h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+</div>
+
+<form id="createForm" asp-action="Create" method="post">
+    <div class="modal-body modal-body-custom">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <!-- Sección: Información Personal -->
+        <div class="form-section">
+            <div class="form-section-title">
+                <i class="bi bi-person-badge"></i>
+                <span>Información Personal</span>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label asp-for="DNI" class="form-label-custom">
+                        <i class="bi bi-card-text"></i> DNI
+                    </label>
+                    <input asp-for="DNI" class="form-control form-control-custom" placeholder="12345678" maxlength="8" />
+                    <span asp-validation-for="DNI" class="text-danger"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Nombre" class="form-label-custom">
+                        <i class="bi bi-person"></i> Nombre
+                    </label>
+                    <input asp-for="Nombre" class="form-control form-control-custom" placeholder="Juan" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Apellido" class="form-label-custom">
+                        <i class="bi bi-person"></i> Apellido
+                    </label>
+                    <input asp-for="Apellido" class="form-control form-control-custom" placeholder="Pérez García" />
+                    <span asp-validation-for="Apellido" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección: Información de Contacto -->
+        <div class="form-section">
+            <div class="form-section-title">
+                <i class="bi bi-telephone"></i>
+                <span>Información de Contacto</span>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Telefono" class="form-label-custom">
+                        <i class="bi bi-phone"></i> Teléfono
+                    </label>
+                    <input asp-for="Telefono" class="form-control form-control-custom" placeholder="999999999" />
+                    <span asp-validation-for="Telefono" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Email" class="form-label-custom">
+                        <i class="bi bi-envelope"></i> Email
+                    </label>
+                    <input asp-for="Email" type="email" class="form-control form-control-custom" placeholder="apoderado@email.com" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label asp-for="Direccion" class="form-label-custom">
+                        <i class="bi bi-geo-alt"></i> Dirección
+                    </label>
+                    <textarea asp-for="Direccion" class="form-control form-control-custom" rows="2" placeholder="Av. Ejemplo 123, Lima"></textarea>
+                    <span asp-validation-for="Direccion" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <input type="hidden" asp-for="IsActive" value="true" />
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle"></i> Cancelar
+        </button>
+        <button type="submit" class="btn btn-save">
+            <i class="bi bi-check-circle"></i> Guardar Apoderado
+        </button>
+    </div>
+</form>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#createForm').on('submit', function (e) {
+            e.preventDefault();
+
+            if (!$(this).valid()) {
+                return false;
+            }
+
+            // Deshabilitar botón para evitar doble clic
+            var btnGuardar = $(this).find('button[type="submit"]');
+            btnGuardar.prop('disabled', true);
+            btnGuardar.html('<i class="bi bi-hourglass-split"></i> Guardando...');
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (response) {
+                    // ✅ CERRAR MODAL
+                    $('#createModal').modal('hide');
+
+                    // ✅ REDIRIGIR A LA PÁGINA DE CREDENCIALES
+                    window.location.href = '@Url.Action("Credenciales", "LegalGuardians")';
+                },
+                error: function (xhr) {
+                    // Reactivar botón en caso de error
+                    btnGuardar.prop('disabled', false);
+                    btnGuardar.html('<i class="bi bi-check-circle"></i> Guardar Apoderado');
+
+                    // Mostrar error
+                    if (xhr.status === 400) {
+                        // Error de validación
+                        alert('Error de validación. Por favor, revise los campos.');
+                    } else {
+                        alert('Error al guardar: ' + (xhr.responseText || 'Error desconocido'));
+                    }
+                }
+            });
+        });
+    });
+</script>

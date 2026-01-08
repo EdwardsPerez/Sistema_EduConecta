@@ -1,0 +1,260 @@
+﻿@{
+    ViewData["Title"] = "Credenciales de Acceso";
+    Layout = "_Layout";
+}
+
+<style>
+    .credentials-container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 40px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        color: white;
+    }
+
+    .credentials-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+        .credentials-header i {
+            font-size: 80px;
+            color: #fff;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        .credentials-header h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .credentials-header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+    .credential-box {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .credential-label {
+        font-size: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+        opacity: 0.8;
+    }
+
+    .credential-value {
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        font-family: 'Courier New', monospace;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 15px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .copy-btn {
+        background: rgba(255, 255, 255, 0.3);
+        border: none;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 14px;
+    }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+    .info-section {
+        background: rgba(255, 255, 255, 0.1);
+        border-left: 4px solid #fff;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 30px;
+    }
+
+        .info-section i {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        .info-section p {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+    .action-buttons {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .btn-primary-custom {
+        background: white;
+        color: #667eea;
+        border: none;
+        padding: 15px 40px;
+        border-radius: 50px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+    @@keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+
+        40% {
+            transform: translateY(-20px);
+        }
+
+        60% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .copied-notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #4caf50;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        z-index: 9999;
+        display: none;
+        animation: slideIn 0.3s ease;
+    }
+
+    @@keyframes slideIn {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+</style>
+
+<div class="credentials-container">
+    <div class="credentials-header">
+        <i class="bi bi-shield-check"></i>
+        <h2>¡Apoderado Registrado Exitosamente!</h2>
+        <p>Credenciales de acceso generadas</p>
+    </div>
+
+    <div class="credential-box">
+        <div class="credential-label">
+            <i class="bi bi-person-circle"></i> Nombre del Apoderado
+        </div>
+        <div class="credential-value" style="font-size: 20px; letter-spacing: normal;">
+            <span>@TempData["NombreApoderado"]</span>
+        </div>
+    </div>
+
+    <div class="credential-box">
+        <div class="credential-label">
+            <i class="bi bi-person-badge"></i> DNI
+        </div>
+        <div class="credential-value">
+            <span id="dni-value">@TempData["DNIApoderado"]</span>
+            <button class="copy-btn" onclick="copyToClipboard('dni-value')">
+                <i class="bi bi-clipboard"></i> Copiar
+            </button>
+        </div>
+    </div>
+
+    <div class="credential-box">
+        <div class="credential-label">
+            <i class="bi bi-person-fill"></i> Usuario
+        </div>
+        <div class="credential-value">
+            <span id="username-value">@TempData["UsuarioGenerado"]</span>
+            <button class="copy-btn" onclick="copyToClipboard('username-value')">
+                <i class="bi bi-clipboard"></i> Copiar
+            </button>
+        </div>
+    </div>
+
+    <div class="credential-box">
+        <div class="credential-label">
+            <i class="bi bi-key-fill"></i> Contraseña
+        </div>
+        <div class="credential-value">
+            <span id="password-value">@TempData["ContrasenaGenerada"]</span>
+            <button class="copy-btn" onclick="copyToClipboard('password-value')">
+                <i class="bi bi-clipboard"></i> Copiar
+            </button>
+        </div>
+    </div>
+
+    <div class="info-section">
+        <p>
+            <i class="bi bi-info-circle-fill"></i>
+            <strong>Importante:</strong> Guarde estas credenciales de forma segura.
+            El apoderado podrá usar estas credenciales para acceder a su dashboard
+            y gestionar los pagos y cuotas de sus estudiantes.
+        </p>
+    </div>
+
+    <div class="action-buttons">
+        <a href="@Url.Action("Index", "LegalGuardians")" class="btn-primary-custom">
+            <i class="bi bi-arrow-left-circle"></i> Volver a Apoderados
+        </a>
+    </div>
+</div>
+
+<div class="copied-notification" id="copied-notification">
+    <i class="bi bi-check-circle-fill"></i> ¡Copiado al portapapeles!
+</div>
+
+<script>
+    function copyToClipboard(elementId) {
+        const element = document.getElementById(elementId);
+        const text = element.textContent;
+
+        navigator.clipboard.writeText(text).then(function () {
+            // Mostrar notificación
+            const notification = document.getElementById('copied-notification');
+            notification.style.display = 'block';
+
+            // Ocultar después de 2 segundos
+            setTimeout(function () {
+                notification.style.display = 'none';
+            }, 2000);
+        }, function (err) {
+            console.error('Error al copiar: ', err);
+        });
+    }
+</script>

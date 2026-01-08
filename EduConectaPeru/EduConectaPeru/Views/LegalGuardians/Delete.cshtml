@@ -1,0 +1,235 @@
+﻿@model EduConectaPeru.Models.LegalGuardian
+
+@{
+    Layout = null;
+}
+
+<style>
+    .modal-header-custom {
+        background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+        color: white;
+        border-radius: 15px 15px 0 0;
+        padding: 20px 25px;
+    }
+
+    .modal-body-custom {
+        padding: 30px;
+    }
+
+    .alert-custom {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border-left: 4px solid #f39c12;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+    }
+
+        .alert-custom i {
+            font-size: 2rem;
+            color: #f39c12;
+            margin-right: 15px;
+        }
+
+    .delete-info-box {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .delete-info-row {
+        display: flex;
+        padding: 10px 0;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+        .delete-info-row:last-child {
+            border-bottom: none;
+        }
+
+    .delete-info-label {
+        font-weight: 600;
+        color: #6c757d;
+        min-width: 150px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .delete-info-value {
+        color: #212529;
+        flex: 1;
+    }
+
+    .info-note {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-left: 4px solid #2196f3;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+
+    .btn-cancel {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-cancel:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+    .btn-delete-confirm {
+        background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+    }
+
+        .btn-delete-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+            color: white;
+        }
+
+    .apoderado-avatar-small {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-right: 10px;
+    }
+</style>
+
+<div class="modal-header modal-header-custom">
+    <h5 class="modal-title">
+        <i class="bi bi-exclamation-triangle"></i> Desactivar Apoderado
+    </h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+</div>
+
+<form id="deleteForm" asp-action="Delete" method="post">
+    <div class="modal-body modal-body-custom">
+        <input type="hidden" asp-for="LegalGuardianId" />
+
+        <div class="alert-custom">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <div>
+                    <h6 class="mb-1" style="color: #856404; font-weight: 700;">¡Advertencia!</h6>
+                    <p class="mb-0" style="color: #856404;">
+                        Está a punto de desactivar este apoderado. No podrá acceder al sistema pero mantendrá sus registros de estudiantes.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="delete-info-box">
+            <h6 class="mb-3" style="color: #495057; font-weight: 600;">
+                <i class="bi bi-info-circle"></i> Información del Apoderado a Desactivar:
+            </h6>
+
+            <div class="d-flex align-items-center mb-3">
+                <div class="apoderado-avatar-small">
+                    @Model.Nombre.Substring(0, 1)@Model.Apellido.Substring(0, 1)
+                </div>
+                <div>
+                    <strong style="font-size: 1.1rem;">@Model.Nombre @Model.Apellido</strong><br />
+                    <small class="text-muted">Apoderado Legal</small>
+                </div>
+            </div>
+
+            <div class="delete-info-row">
+                <div class="delete-info-label">
+                    <i class="bi bi-hash"></i> ID:
+                </div>
+                <div class="delete-info-value">
+                    <strong>#@Model.LegalGuardianId</strong>
+                </div>
+            </div>
+            <div class="delete-info-row">
+                <div class="delete-info-label">
+                    <i class="bi bi-card-text"></i> DNI:
+                </div>
+                <div class="delete-info-value">
+                    <strong>@Model.DNI</strong>
+                </div>
+            </div>
+            <div class="delete-info-row">
+                <div class="delete-info-label">
+                    <i class="bi bi-telephone"></i> Teléfono:
+                </div>
+                <div class="delete-info-value">
+                    @Model.Telefono
+                </div>
+            </div>
+            <div class="delete-info-row">
+                <div class="delete-info-label">
+                    <i class="bi bi-envelope"></i> Email:
+                </div>
+                <div class="delete-info-value">
+                    @Model.Email
+                </div>
+            </div>
+            <div class="delete-info-row">
+                <div class="delete-info-label">
+                    <i class="bi bi-geo-alt"></i> Dirección:
+                </div>
+                <div class="delete-info-value">
+                    @(string.IsNullOrEmpty(Model.Direccion) ? "No especificada" : Model.Direccion)
+                </div>
+            </div>
+        </div>
+
+        <div class="info-note">
+            <i class="bi bi-info-circle"></i>
+            <strong>Nota:</strong> El apoderado puede ser reactivado posteriormente desde la lista principal usando el botón de reactivación. Los estudiantes a su cargo no se verán afectados.
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle"></i> Cancelar
+        </button>
+        <button type="submit" class="btn btn-delete-confirm">
+            <i class="bi bi-check-circle"></i> Confirmar Desactivación
+        </button>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function () {
+        $('#deleteForm').on('submit', function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function () {
+                    $('#deleteModal').modal('hide');
+                    location.reload();
+                },
+                error: function (xhr) {
+                    alert('Error al desactivar: ' + (xhr.responseText || 'Error desconocido'));
+                }
+            });
+        });
+    });
+</script>

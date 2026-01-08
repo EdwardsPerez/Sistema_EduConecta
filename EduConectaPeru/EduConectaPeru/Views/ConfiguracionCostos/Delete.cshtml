@@ -1,0 +1,87 @@
+﻿@model EduConectaPeru.Models.ConfiguracionCosto
+
+@{
+    ViewData["Title"] = "Desactivar Configuración";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h3 class="mb-0">
+                    <i class="bi bi-exclamation-triangle"></i> Confirmar Desactivación
+                </h3>
+            </div>
+            <div class="card-body">
+
+                <div class="alert alert-warning" role="alert">
+                    <i class="bi bi-info-circle"></i>
+                    <strong>Atención:</strong> Está a punto de desactivar esta configuración de costo.
+                    El registro NO se eliminará de la base de datos, pero quedará marcado como inactivo.
+                </div>
+
+                <h5 class="mb-3">¿Está seguro que desea desactivar la siguiente configuración?</h5>
+
+                <!-- Información de la Configuración -->
+                <div class="card mb-3">
+                    <div class="card-header bg-light">
+                        <h6 class="mb-0">Detalles de la Configuración</h6>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4">Año Escolar:</dt>
+                            <dd class="col-sm-8"><strong>@Model.AnioEscolar</strong></dd>
+
+                            <dt class="col-sm-4">Tipo de Costo:</dt>
+                            <dd class="col-sm-8">
+                                @if (Model.TipoCosto == "Matricula")
+                                {
+                                    <span class="badge bg-primary">Matrícula</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-info">Pensión</span>
+                                }
+                            </dd>
+
+                            <dt class="col-sm-4">Grado:</dt>
+                            <dd class="col-sm-8"><strong>@Model.GradoSeccionId</strong></dd>
+
+                            <dt class="col-sm-4">Monto:</dt>
+                            <dd class="col-sm-8"><strong class="text-success">S/ @Model.Monto.ToString("N2")</strong></dd>
+
+                            <dt class="col-sm-4">Fecha Creación:</dt>
+                            <dd class="col-sm-8">@Model.FechaVigencia.ToString("dd/MM/yyyy")</dd>
+
+                            <dt class="col-sm-4">Estado Actual:</dt>
+                            <dd class="col-sm-8">
+                                <span class="badge bg-success">Activa</span>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="alert alert-info" role="alert">
+                    <i class="bi bi-lightbulb"></i>
+                    <strong>Nota:</strong> Podrá reactivar esta configuración posteriormente desde la lista principal
+                    usando el botón de reactivación.
+                </div>
+
+                <!-- Formulario de confirmación -->
+                <form asp-action="Delete" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="ConfigId" />
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-secondary btn-lg">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="bi bi-trash"></i> Confirmar Desactivación
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,308 @@
+@model IEnumerable<EduConectaPeru.Models.Payment>
+@{
+    ViewData["Title"] = "Gestión de Pagos";
+    var totalPagos = Model?.Count() ?? 0;
+    var totalMonto = Model?.Sum(p => p.Monto) ?? 0;
+}
+
+<style>
+    .stats-card {
+        border-radius: 15px;
+        padding: 25px;
+        color: white;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stats-card h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+    .gradient-primary {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+    }
+
+    .gradient-info {
+        background: linear-gradient(135deg, #42A5F5 0%, #2196F3 100%);
+    }
+
+    .table-modern {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+        .table-modern thead {
+            background: #f8f9fa;
+        }
+
+            .table-modern thead th {
+                border: none;
+                padding: 15px;
+                font-weight: 600;
+                color: #495057;
+            }
+
+        .table-modern tbody td {
+            padding: 15px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f3f5;
+        }
+
+        .table-modern tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+    .btn-action {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        margin: 0 2px;
+    }
+
+    .btn-view {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+    }
+
+
+    .btn-delete {
+        background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+        color: white;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    .page-header {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .filter-section {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .form-select-modern {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 12px 20px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+    }
+
+        .form-select-modern:focus {
+            border-color: #1976D2;
+            box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.15);
+            background-color: white;
+        }
+
+    .btn-filter {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+        .btn-filter:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4);
+        }
+
+    .btn-clear {
+        background: #6c757d;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 10px;
+        font-weight: 600;
+        color: white;
+    }
+</style>
+
+<div class="container-fluid py-4">
+
+    <!-- Filtros Mejorados -->
+    <div class="filter-section">
+        <form method="get" asp-action="Index">
+            <div class="row g-4">
+                <div class="col-md-9">
+                    <label class="form-label fw-bold mb-2">
+                        <i class="bi bi-person-circle text-primary"></i> Filtrar por Estudiante
+                    </label>
+                    <select name="estudianteId" class="form-select form-select-modern">
+                        <option value="">📋 Todos los estudiantes</option>
+                        @if (ViewBag.Estudiantes != null)
+                        {
+                            foreach (var estudiante in ViewBag.Estudiantes)
+                            {
+                                <option value="@estudiante.Value" selected="@(estudiante.Selected)">
+                                    👤 @estudiante.Text
+                                </option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-3 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-filter flex-fill">
+                        <i class="bi bi-search"></i> Buscar
+                    </button>
+                    <a href="@Url.Action("Index")" class="btn btn-clear">
+                        <i class="bi bi-x-circle"></i> Limpiar
+                    </a>
+                </div>
+            </div>
+
+            @if (ViewBag.MensajeFiltro != null)
+            {
+                <div class="alert alert-info mt-3 mb-0">
+                    <i class="bi bi-info-circle"></i> @ViewBag.MensajeFiltro
+                </div>
+            }
+        </form>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="stats-card gradient-primary">
+                <i class="bi bi-receipt-cutoff" style="font-size: 2rem; opacity: 0.8;"></i>
+                <h3>@totalPagos</h3>
+                <p>Total Pagos</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="stats-card gradient-info">
+                <i class="bi bi-cash-coin" style="font-size: 2rem; opacity: 0.8;"></i>
+                <h3>S/ @totalMonto.ToString("N2")</h3>
+                <p>Monto Total</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-modern">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Estudiante</th>
+                    <th>Cuota</th>
+                    <th>Fecha</th>
+                    <th>Monto</th>
+                    <th>Tipo</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><strong>#@item.PaymentId</strong></td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px; font-weight: 600;">
+                                        @{
+                                            var nombre = item.Student?.Nombre ?? "";
+                                            var inicial = !string.IsNullOrEmpty(nombre) ? nombre.Substring(0, 1) : "?";
+                                        }
+                                        @inicial
+                                    </div>
+                                    <div>
+                                        <strong>@item.Student?.NombreCompleto</strong>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@item.Quota?.Mes @item.Quota?.Anio</td>
+                            <td>@item.FechaPago.ToString("dd/MM/yyyy")</td>
+                            <td><strong class="text-success">S/ @item.Monto.ToString("N2")</strong></td>
+                            <td>@item.PaymentType?.TypeName</td>
+                            <td class="text-center">
+                                <button class="btn btn-action btn-view" onclick="loadDetails(@item.PaymentId)"><i class="bi bi-eye"></i></button>
+                                @if (item.IsActive)
+                                {
+                                    <button class="btn btn-action btn-delete" onclick="loadDelete(@item.PaymentId)"><i class="bi bi-trash"></i></button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-center py-5">
+                            <i class="bi bi-inbox" style="font-size: 3rem; color: #dee2e6;"></i>
+                            <p class="text-muted mt-3">No hay pagos registrados</p>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modales -->
+
+<div class="modal fade" id="detailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="detailsModalContent">
+            <div class="text-center p-5"><div class="spinner-border text-primary"></div></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" id="deleteModalContent">
+            <div class="text-center p-5"><div class="spinner-border text-primary"></div></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+
+        function loadDetails(id) {
+            $.get('@Url.Action("Details")/' + id, function(data) {
+                $('#detailsModalContent').html(data);
+                $('#detailsModal').modal('show');
+            });
+        }
+
+        function loadDelete(id) {
+            $.get('@Url.Action("Delete")/' + id, function(data) {
+                $('#deleteModalContent').html(data);
+                $('#deleteModal').modal('show');
+            });
+        }
+    </script>
+}

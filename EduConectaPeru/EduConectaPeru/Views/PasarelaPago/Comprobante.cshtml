@@ -1,0 +1,162 @@
+﻿@model EduConectaPeru.Models.TransaccionPago
+
+@{
+    ViewData["Title"] = "Comprobante de Pago";
+    var apoderado = ViewBag.Apoderado as EduConectaPeru.Models.LegalGuardian;
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <a asp-controller="ApoderadoDashboard" asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver al Dashboard
+            </a>
+            <div>
+                <button onclick="window.print()" class="btn btn-primary">
+                    <i class="bi bi-printer"></i> Imprimir Comprobante
+                </button>
+            </div>
+        </div>
+
+        <div class="card" id="comprobante">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <h2 class="text-primary">EduConecta Perú</h2>
+                    <p class="text-muted mb-0">Sistema de Gestión Educativa</p>
+                    <p class="text-muted">RUC: 20123456789</p>
+                    <hr />
+                    <h3 class="mt-3">COMPROBANTE DE PAGO</h3>
+                    <p class="text-muted">#CP-@Model.TransaccionId.ToString("D8")</p>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5 class="text-primary mb-3">Información del Apoderado</h5>
+                        <dl class="row">
+                            <dt class="col-sm-4">Nombre:</dt>
+                            <dd class="col-sm-8"><strong>@apoderado?.NombreCompleto</strong></dd>
+                            <dt class="col-sm-4">DNI:</dt>
+                            <dd class="col-sm-8">@apoderado?.DNI</dd>
+                            <dt class="col-sm-4">Email:</dt>
+                            <dd class="col-sm-8">@apoderado?.Email</dd>
+                            <dt class="col-sm-4">Teléfono:</dt>
+                            <dd class="col-sm-8">@apoderado?.Telefono</dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-primary mb-3">Datos de la Transacción</h5>
+                        <dl class="row">
+                            <dt class="col-sm-5">Fecha de Pago:</dt>
+                            <dd class="col-sm-7">@Model.FechaTransaccion.ToString("dd/MM/yyyy")</dd>
+                            <dt class="col-sm-5">Hora:</dt>
+                            <dd class="col-sm-7">@Model.FechaTransaccion.ToString("HH:mm:ss")</dd>
+                            <dt class="col-sm-5">Código Autoriz.:</dt>
+                            <dd class="col-sm-7"><strong class="text-success">@Model.CodigoAutorizacion</strong></dd>
+                            <dt class="col-sm-5">Tarjeta:</dt>
+                            <dd class="col-sm-7">**** **** **** @Model.NumeroTarjeta</dd>
+                            <dt class="col-sm-5">Estado:</dt>
+                            <dd class="col-sm-7"><span class="badge bg-success">@Model.Estado</span></dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <hr />
+
+                <h5 class="text-primary mb-3">Detalle de Cuotas Pagadas</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 5%;">#</th>
+                                <th style="width: 55%;">Descripción</th>
+                                <th class="text-end" style="width: 20%;">Monto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Carrito?.DetallesCarrito != null)
+                            {
+                                int contador = 1;
+                                @foreach (var detalle in Model.Carrito.DetallesCarrito)
+                                {
+                                    <tr>
+                                        <td class="text-center">@contador</td>
+                                        <td>@detalle.Concepto</td>
+                                        <td class="text-end">S/ @detalle.Monto.ToString("N2")</td>
+                                    </tr>
+                                    contador++;
+                                }
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2" class="text-end"><strong>SUBTOTAL:</strong></td>
+                                <td class="text-end"><strong>S/ @Model.MontoTotal.ToString("N2")</strong></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="text-end"><strong>IGV (0%):</strong></td>
+                                <td class="text-end"><strong>S/ 0.00</strong></td>
+                            </tr>
+                            <tr class="table-success">
+                                <td colspan="2" class="text-end"><h5 class="mb-0">TOTAL PAGADO:</h5></td>
+                                <td class="text-end"><h5 class="mb-0 text-success">S/ @Model.MontoTotal.ToString("N2")</h5></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <hr />
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <p class="small mb-1"><strong>Observaciones:</strong></p>
+                        <p class="small">Este comprobante es válido como constancia de pago de las cuotas escolares. Guarde este documento para sus registros.</p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <p class="small mb-1"><strong>Información de Contacto:</strong></p>
+                        <p class="small mb-0">
+                            EduConecta Perú<br>
+                            Av. Principal 123, San Isidro, Lima<br>
+                            Teléfono: (01) 123-4567<br>
+                            Email: pagos@educonectaperu.edu.pe
+                        </p>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4 pt-3 border-top">
+                    <p class="small text-muted mb-0">
+                        <i class="bi bi-shield-check"></i>
+                        Transacción procesada de forma segura |
+                        Sistema EduConecta Perú © @DateTime.Now.Year
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-info mt-3">
+            <h6 class="alert-heading">
+                <i class="bi bi-info-circle"></i> Información Importante
+            </h6>
+            <ul class="small mb-0 ps-3">
+                <li>Este comprobante confirma el pago de las cuotas indicadas</li>
+                <li>Puede imprimir este documento usando el botón superior</li>
+                <li>Las cuotas pagadas ya no aparecerán como pendientes</li>
+                <li>Para cualquier consulta, cite el código de autorización: <strong>@Model.CodigoAutorizacion</strong></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        @@media print {
+            .btn, .alert, nav, footer {
+                display: none !important;
+            }
+
+            #comprobante {
+                border: none !important;
+                box-shadow: none !important;
+            }
+        }
+    </style>
+}

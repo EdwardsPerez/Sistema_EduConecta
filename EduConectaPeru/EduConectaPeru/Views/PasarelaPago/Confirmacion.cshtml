@@ -1,0 +1,140 @@
+﻿@model EduConectaPeru.Models.TransaccionPago
+
+@{
+    ViewData["Title"] = Model.Estado == "Aprobada" ? "Pago Exitoso" : "Pago Rechazado";
+    var esAprobado = Model.Estado == "Aprobada";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card shadow-lg border-0">
+            <div class="card-header @(esAprobado ? "bg-success" : "bg-danger") text-white text-center py-4">
+                @if (esAprobado)
+                {
+                    <i class="bi bi-check-circle-fill" style="font-size: 4rem;"></i>
+                    <h2 class="mt-3 mb-0">¡Pago Exitoso!</h2>
+                }
+                else
+                {
+                    <i class="bi bi-x-circle-fill" style="font-size: 4rem;"></i>
+                    <h2 class="mt-3 mb-0">Pago Rechazado</h2>
+                }
+            </div>
+            <div class="card-body p-4">
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success">
+                        <i class="bi bi-info-circle"></i> @TempData["SuccessMessage"]
+                    </div>
+                }
+
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
+                    </div>
+                }
+
+                <div class="mb-4">
+                    <h5 class="border-bottom pb-2 mb-3">
+                        <i class="bi bi-receipt"></i> Detalles de la Transacción
+                    </h5>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">N° de Transacción:</dt>
+                        <dd class="col-sm-7"><strong>#@Model.TransaccionId</strong></dd>
+
+                        <dt class="col-sm-5">Fecha y Hora:</dt>
+                        <dd class="col-sm-7">@Model.FechaTransaccion.ToString("dd/MM/yyyy HH:mm:ss")</dd>
+
+                        <dt class="col-sm-5">Monto Total:</dt>
+                        <dd class="col-sm-7"><h4 class="mb-0 text-success">S/ @Model.MontoTotal.ToString("N2")</h4></dd>
+
+                        <dt class="col-sm-5">Estado:</dt>
+                        <dd class="col-sm-7">
+                            <span class="badge @(esAprobado ? "bg-success" : "bg-danger")" style="font-size: 1rem; padding: 0.5rem 1rem;">
+                                @Model.Estado
+                            </span>
+                        </dd>
+
+                        @if (esAprobado && !string.IsNullOrEmpty(Model.CodigoAutorizacion))
+                        {
+                            <dt class="col-sm-5">Código de Autorización:</dt>
+                            <dd class="col-sm-7">
+                                <code class="bg-light p-2 d-inline-block">@Model.CodigoAutorizacion</code>
+                            </dd>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.NumeroTarjeta))
+                        {
+                            <dt class="col-sm-5">Tarjeta:</dt>
+                            <dd class="col-sm-7">**** **** **** @Model.NumeroTarjeta</dd>
+                        }
+                    </dl>
+                </div>
+
+                @if (esAprobado)
+                {
+                    <div class="alert alert-info">
+                        <h6 class="alert-heading">
+                            <i class="bi bi-info-circle"></i> ¿Qué sigue?
+                        </h6>
+                        <ul class="mb-0 ps-3">
+                            <li>Sus cuotas han sido marcadas como <strong>PAGADAS</strong></li>
+                            <li>Puede descargar el comprobante de pago</li>
+                            <li>El comprobante también estará disponible en su historial de pagos</li>
+                            <li>Recibirá un correo de confirmación (si tiene email registrado)</li>
+                        </ul>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <a asp-action="Comprobante" asp-route-transaccionId="@Model.TransaccionId"
+                           class="btn btn-success btn-lg">
+                            <i class="bi bi-file-earmark-pdf"></i> Descargar Comprobante
+                        </a>
+                        <a asp-controller="ApoderadoDashboard" asp-action="Index" class="btn btn-primary btn-lg">
+                            <i class="bi bi-house"></i> Volver al Dashboard
+                        </a>
+                        <a asp-controller="ApoderadoDashboard" asp-action="HistorialPagos" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-clock-history"></i> Ver Historial de Pagos
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning">
+                        <h6 class="alert-heading">
+                            <i class="bi bi-exclamation-triangle"></i> ¿Qué hacer ahora?
+                        </h6>
+                        <ul class="mb-0 ps-3">
+                            <li>Verifique que los datos de su tarjeta sean correctos</li>
+                            <li>Asegúrese de tener fondos disponibles</li>
+                            <li>Contacte con su banco si el problema persiste</li>
+                            <li>Puede intentar el pago nuevamente</li>
+                        </ul>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <a asp-controller="CarritoCompras" asp-action="Index" class="btn btn-warning btn-lg">
+                            <i class="bi bi-arrow-clockwise"></i> Intentar Nuevamente
+                        </a>
+                        <a asp-controller="ApoderadoDashboard" asp-action="Index" class="btn btn-secondary btn-lg">
+                            <i class="bi bi-house"></i> Volver al Dashboard
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Confetti animation si fue aprobado
+        @if (esAprobado)
+        {
+                <text>
+                console.log('¡Pago exitoso! 🎉');
+                </text>
+        }
+    </script>
+}

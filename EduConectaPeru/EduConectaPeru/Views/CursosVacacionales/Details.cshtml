@@ -1,0 +1,319 @@
+﻿@model EduConectaPeru.Models.CursoVacacional
+
+@{
+    Layout = null;
+    var cuposDisponibles = Model.CuposDisponibles;
+    var porcentajeDisponible = Model.CapacidadMaxima > 0
+        ? (cuposDisponibles * 100.0 / Model.CapacidadMaxima)
+        : 0;
+    var cuposClass = porcentajeDisponible > 50 ? "badge-success"
+        : porcentajeDisponible > 0 ? "badge-warning"
+        : "badge-danger";
+    var duracionDias = (Model.FechaFin - Model.FechaInicio).Days;
+}
+
+<style>
+    .modal-header-custom {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 15px 15px 0 0;
+        padding: 20px 25px;
+    }
+
+    .modal-body-custom {
+        padding: 30px;
+    }
+
+    .detail-section {
+        margin-bottom: 25px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border-left: 4px solid #667eea;
+    }
+
+    .detail-section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .detail-section-title i {
+            color: #667eea;
+            font-size: 1.3rem;
+        }
+
+    .detail-row {
+        display: flex;
+        padding: 10px 0;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+    .detail-label {
+        font-weight: 600;
+        color: #6c757d;
+        min-width: 180px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .detail-value {
+        color: #212529;
+        flex: 1;
+    }
+
+    .badge-custom {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .badge-success {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        color: white;
+    }
+
+    .badge-danger {
+        background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        color: white;
+    }
+
+    .badge-warning {
+        background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+        color: #000;
+    }
+
+    .badge-info {
+        background: linear-gradient(135deg, #0575e6 0%, #021b79 100%);
+        color: white;
+    }
+
+    .btn-close-custom {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-close-custom:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+    .info-box {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-left: 4px solid #2196f3;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+
+    .progress-custom {
+        height: 25px;
+        border-radius: 15px;
+        background: #e9ecef;
+    }
+
+    .progress-bar-custom {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+</style>
+
+<div class="modal-header modal-header-custom">
+    <h5 class="modal-title">
+        <i class="bi bi-eye"></i> Detalles del Curso Vacacional
+    </h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+</div>
+
+<div class="modal-body modal-body-custom">
+    <!-- Sección: Información General -->
+    <div class="detail-section">
+        <div class="detail-section-title">
+            <i class="bi bi-info-circle"></i>
+            <span>Información General</span>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-hash"></i> ID del Curso:
+            </div>
+            <div class="detail-value">
+                <strong>#@Model.CursoVacacionalId</strong>
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-bookmark"></i> Nombre:
+            </div>
+            <div class="detail-value">
+                <strong>@Model.NombreCurso</strong>
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-text-left"></i> Descripción:
+            </div>
+            <div class="detail-value">
+                @(string.IsNullOrEmpty(Model.Descripcion) ? "No especificada" : Model.Descripcion)
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-toggle-on"></i> Estado:
+            </div>
+            <div class="detail-value">
+                @if (Model.IsActive)
+                {
+                    <span class="badge-custom badge-success">
+                        <i class="bi bi-check-circle"></i> Activo
+                    </span>
+                }
+                else
+                {
+                    <span class="badge-custom badge-danger">
+                        <i class="bi bi-x-circle"></i> Inactivo
+                    </span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección: Fechas y Duración -->
+    <div class="detail-section">
+        <div class="detail-section-title">
+            <i class="bi bi-calendar-range"></i>
+            <span>Fechas y Duración</span>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-calendar-event"></i> Fecha de Inicio:
+            </div>
+            <div class="detail-value">
+                <strong>@Model.FechaInicio.ToString("dddd, dd 'de' MMMM 'de' yyyy")</strong>
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-calendar-check"></i> Fecha de Fin:
+            </div>
+            <div class="detail-value">
+                <strong>@Model.FechaFin.ToString("dddd, dd 'de' MMMM 'de' yyyy")</strong>
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-hourglass-split"></i> Duración:
+            </div>
+            <div class="detail-value">
+                <span class="badge-custom badge-info">
+                    @duracionDias días
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección: Costos -->
+    <div class="detail-section">
+        <div class="detail-section-title">
+            <i class="bi bi-cash-stack"></i>
+            <span>Información de Costos</span>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-cash"></i> Costo Total:
+            </div>
+            <div class="detail-value">
+                <strong style="color: #27ae60; font-size: 1.2rem;">S/ @Model.Costo.ToString("N2")</strong>
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-calculator"></i> Costo por Día:
+            </div>
+            <div class="detail-value">
+                S/ @((Model.Costo / duracionDias).ToString("N2"))
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección: Capacidad y Disponibilidad -->
+    <div class="detail-section">
+        <div class="detail-section-title">
+            <i class="bi bi-people"></i>
+            <span>Capacidad y Disponibilidad</span>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-person-check"></i> Capacidad Máxima:
+            </div>
+            <div class="detail-value">
+                <strong>@Model.CapacidadMaxima estudiantes</strong>
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-check2-square"></i> Cupos Disponibles:
+            </div>
+            <div class="detail-value">
+                <span class="badge-custom @cuposClass">
+                    @Model.CuposDisponibles cupos
+                </span>
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-person-fill"></i> Estudiantes Inscritos:
+            </div>
+            <div class="detail-value">
+                <strong>@(Model.CapacidadMaxima - Model.CuposDisponibles) estudiantes</strong>
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-bar-chart"></i> Ocupación:
+            </div>
+            <div class="detail-value">
+                <div class="progress progress-custom">
+                    <div class="progress-bar progress-bar-custom" style="width: @((100 - porcentajeDisponible).ToString("F0"))%">
+                        @((100 - porcentajeDisponible).ToString("F0"))%
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="info-box">
+        <i class="bi bi-info-circle"></i>
+        <strong>Información:</strong> Este curso vacacional @(Model.IsActive ? "está activo y disponible para inscripciones" : "está inactivo y no acepta nuevas inscripciones").
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-close-custom" data-bs-dismiss="modal">
+        <i class="bi bi-x-circle"></i> Cerrar
+    </button>
+</div>

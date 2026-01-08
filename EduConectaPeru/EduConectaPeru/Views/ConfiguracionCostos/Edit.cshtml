@@ -1,0 +1,120 @@
+﻿@model EduConectaPeru.Models.ConfiguracionCosto
+
+@{
+    ViewData["Title"] = "Editar Configuración de Costo";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-pencil-square"></i> Editar Configuración de Costo</h2>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Volver a la Lista
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-body">
+                <div class="alert alert-info" role="alert">
+                    <i class="bi bi-info-circle"></i>
+                    <strong>Nota:</strong> El estado de la configuración se gestiona desde la lista principal.
+                </div>
+
+                <form asp-action="Edit" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="ConfigId" />
+                    <input type="hidden" asp-for="FechaVigencia" />
+                    <input type="hidden" asp-for="IsActive" />
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <!-- Tipo de Costo y Año Escolar -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="bi bi-info-circle"></i> Información General</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label asp-for="TipoCosto" class="form-label"></label>
+                                        <select asp-for="TipoCosto" class="form-select">
+                                            <option value="">-- Seleccione --</option>
+                                            <option value="Matricula">Matrícula</option>
+                                            <option value="Pension">Pensión</option>
+                                        </select>
+                                        <span asp-validation-for="TipoCosto" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label asp-for="AnioEscolar" class="form-label"></label>
+                                        <input asp-for="AnioEscolar" class="form-control" type="number" min="2024" max="2050" />
+                                        <span asp-validation-for="AnioEscolar" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grado y Monto -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-secondary text-white">
+                            <h5 class="mb-0"><i class="bi bi-book"></i> Grado y Monto</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label asp-for="GradoSeccionId" class="form-label"></label>
+                                        <select asp-for="GradoSeccionId" class="form-select">
+                                            <option value="">-- Seleccione --</option>
+                                            <option value="1ro Primaria">1ro Primaria</option>
+                                            <option value="2do Primaria">2do Primaria</option>
+                                            <option value="3ro Primaria">3ro Primaria</option>
+                                            <option value="4to Primaria">4to Primaria</option>
+                                            <option value="5to Primaria">5to Primaria</option>
+                                            <option value="6to Primaria">6to Primaria</option>
+                                            <option value="1ro Secundaria">1ro Secundaria</option>
+                                            <option value="2do Secundaria">2do Secundaria</option>
+                                            <option value="3ro Secundaria">3ro Secundaria</option>
+                                            <option value="4to Secundaria">4to Secundaria</option>
+                                            <option value="5to Secundaria">5to Secundaria</option>
+                                        </select>
+                                        <span asp-validation-for="GradoSeccionId" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label asp-for="Monto" class="form-label"></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">S/</span>
+                                            <input asp-for="Monto" class="form-control" type="number" step="0.01" min="0" placeholder="0.00" />
+                                        </div>
+                                        <span asp-validation-for="Monto" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-secondary btn-lg">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-warning btn-lg">
+                            <i class="bi bi-save"></i> Actualizar Configuración
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

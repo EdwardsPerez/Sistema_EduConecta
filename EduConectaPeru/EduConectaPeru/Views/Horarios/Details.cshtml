@@ -1,0 +1,300 @@
+﻿@model EduConectaPeru.Models.Horario
+
+@{
+    Layout = null;
+    var duracion = Model.HoraFin - Model.HoraInicio;
+    var duracionMinutos = (int)duracion.TotalMinutes;
+}
+
+<style>
+    .modal-header-custom {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+        border-radius: 15px 15px 0 0;
+        padding: 20px 25px;
+    }
+
+    .modal-body-custom {
+        padding: 30px;
+    }
+
+    .detail-section {
+        margin-bottom: 25px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border-left: 4px solid #1976D2;
+    }
+
+    .detail-section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .detail-section-title i {
+            color: #1976D2;
+            font-size: 1.3rem;
+        }
+
+    .detail-row {
+        display: flex;
+        padding: 10px 0;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+    .detail-label {
+        font-weight: 600;
+        color: #6c757d;
+        min-width: 180px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .detail-value {
+        color: #212529;
+        flex: 1;
+    }
+
+    .badge-custom {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .badge-success {
+        background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
+        color: white;
+    }
+
+    .badge-danger {
+        background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+        color: white;
+    }
+
+    .badge-info {
+        background: linear-gradient(135deg, #42A5F5 0%, #2196F3 100%);
+        color: white;
+    }
+
+    .badge-warning {
+        background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+        color: white;
+    }
+
+    .btn-close-custom {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-close-custom:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+    .info-box {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-left: 4px solid #2196f3;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+
+    .horario-header {
+        text-align: center;
+        padding: 25px;
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        border-radius: 10px;
+        color: white;
+        margin-bottom: 25px;
+    }
+
+        .horario-header h3 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .horario-header p {
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+        }
+
+    .time-display {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1976D2;
+        text-align: center;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        margin: 15px 0;
+    }
+
+        .time-display small {
+            font-size: 1rem;
+            color: #6c757d;
+            font-weight: 400;
+        }
+</style>
+
+<div class="modal-header modal-header-custom">
+    <h5 class="modal-title">
+        <i class="bi bi-eye"></i> Detalles del Horario
+    </h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+</div>
+
+<div class="modal-body modal-body-custom">
+    <!-- Header del Horario -->
+    <div class="horario-header">
+        <h3>@Model.Curso</h3>
+        <p>@Model.DiaSemana</p>
+    </div>
+
+    <!-- Sección: Información General -->
+    <div class="detail-section">
+        <div class="detail-section-title">
+            <i class="bi bi-info-circle"></i>
+            <span>Información General</span>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-hash"></i> ID del Horario:
+            </div>
+            <div class="detail-value">
+                <strong>#@Model.HorarioId</strong>
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-mortarboard"></i> Grado:
+            </div>
+            <div class="detail-value">
+                <span class="badge-custom badge-info">
+                    @(Model.GradoSeccion?.Grado ?? "N/A")
+                </span>
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-grid-3x3-gap"></i> Sección:
+            </div>
+            <div class="detail-value">
+                <span class="badge-custom badge-warning">
+                    Sección @(Model.GradoSeccion?.Seccion ?? "N/A")
+                </span>
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-book"></i> Curso:
+            </div>
+            <div class="detail-value">
+                <strong>@Model.Curso</strong>
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-toggle-on"></i> Estado:
+            </div>
+            <div class="detail-value">
+                @if (Model.IsActive)
+                {
+                    <span class="badge-custom badge-success">
+                        <i class="bi bi-check-circle"></i> Activo
+                    </span>
+                }
+                else
+                {
+                    <span class="badge-custom badge-danger">
+                        <i class="bi bi-x-circle"></i> Inactivo
+                    </span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección: Horario -->
+    <div class="detail-section">
+        <div class="detail-section-title">
+            <i class="bi bi-clock-history"></i>
+            <span>Información de Horario</span>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-calendar-day"></i> Día de la Semana:
+            </div>
+            <div class="detail-value">
+                <strong>@Model.DiaSemana</strong>
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-clock"></i> Hora de Inicio:
+            </div>
+            <div class="detail-value">
+                <strong>@Model.HoraInicio.ToString(@"hh\:mm")</strong>
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-clock-fill"></i> Hora de Fin:
+            </div>
+            <div class="detail-value">
+                <strong>@Model.HoraFin.ToString(@"hh\:mm")</strong>
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-hourglass-split"></i> Duración:
+            </div>
+            <div class="detail-value">
+                <span class="badge-custom badge-info">
+                    <i class="bi bi-clock"></i>
+                    @duracionMinutos minutos
+                    @if (duracionMinutos >= 60)
+                    {
+                        <span>(@(duracionMinutos / 60) hora@(duracionMinutos / 60 != 1 ? "s" : ""))</span>
+                    }
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Visualización del Horario -->
+    <div class="time-display">
+        @Model.HoraInicio.ToString(@"hh\:mm") - @Model.HoraFin.ToString(@"hh\:mm")<br />
+        <small>Duración: @duracionMinutos minutos</small>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="info-box">
+        <i class="bi bi-info-circle"></i>
+        <strong>Información:</strong> Este horario @(Model.IsActive ? "está activo y puede ser asignado a docentes" : "está inactivo y no puede recibir asignaciones").
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-close-custom" data-bs-dismiss="modal">
+        <i class="bi bi-x-circle"></i> Cerrar
+    </button>
+</div>

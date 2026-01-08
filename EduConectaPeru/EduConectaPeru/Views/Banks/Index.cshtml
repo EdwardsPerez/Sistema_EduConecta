@@ -1,0 +1,491 @@
+﻿@model IEnumerable<EduConectaPeru.Models.Bank>
+@{
+    ViewData["Title"] = "Bancos";
+    var totalBancos = Model?.Count() ?? 0;
+    var bancosActivos = Model?.Count(x => x.IsActive) ?? 0;
+    var bancosInactivos = totalBancos - bancosActivos;
+}
+
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+        color: white;
+        box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+    }
+
+        .page-header h2 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 2rem;
+        }
+
+    .btn-new {
+        background: white;
+        color: #1976D2;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-new:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: #1976D2;
+        }
+
+    .stats-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        text-align: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.9;
+            z-index: 0;
+        }
+
+    .gradient-primary::before {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+    }
+
+    .gradient-success::before {
+        background: linear-gradient(135deg, #42A5F5 0%, #2196F3 100%);
+    }
+
+    .gradient-warning::before {
+        background: linear-gradient(135deg, #64B5F6 0%, #42A5F5 100%);
+    }
+
+    .stats-card i,
+    .stats-card h3,
+    .stats-card p {
+        position: relative;
+        z-index: 1;
+        color: white;
+        margin: 0;
+    }
+
+    .stats-card h3 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 10px 0;
+    }
+
+    .stats-card p {
+        font-size: 1rem;
+        opacity: 0.95;
+        font-weight: 500;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+
+    .table-modern {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+
+        .table-modern table {
+            margin-bottom: 0;
+        }
+
+        .table-modern thead {
+            background: #f8f9fa;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+            .table-modern thead th {
+                border: none;
+                padding: 15px;
+                font-weight: 600;
+                color: #495057;
+                text-transform: uppercase;
+                font-size: 0.85rem;
+                letter-spacing: 0.5px;
+            }
+
+        .table-modern tbody td {
+            padding: 15px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .table-modern tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table-modern tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+    .bank-icon {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 1rem;
+        margin-right: 10px;
+    }
+
+    .bank-info {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .bank-name {
+        font-weight: 600;
+        color: #2c3e50;
+        display: block;
+    }
+
+    .badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .badge-active {
+        background: linear-gradient(135deg, #42A5F5 0%, #2196F3 100%);
+        color: white;
+    }
+
+    .badge-inactive {
+        background: linear-gradient(135deg, #64B5F6 0%, #42A5F5 100%);
+        color: white;
+    }
+
+    .btn-action {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        margin: 0 2px;
+    }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+    .btn-view {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, #42A5F5 0%, #2196F3 100%);
+        color: white;
+    }
+
+    .btn-delete {
+        background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+        color: white;
+    }
+
+    .btn-reactivate {
+        background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
+        color: white;
+    }
+
+    .modal-content {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .loading-spinner {
+        text-align: center;
+        padding: 40px;
+    }
+
+    .spinner-border {
+        width: 3rem;
+        height: 3rem;
+        border-width: 0.3rem;
+        color: #1976D2;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="page-header d-flex justify-content-between align-items-center">
+        <div>
+            <h2><i class="bi bi-bank"></i> Gestión de Bancos</h2>
+            <p class="mb-0" style="opacity: 0.9;">Administra los bancos disponibles para pagos</p>
+        </div>
+        <button class="btn btn-new" data-bs-toggle="modal" data-bs-target="#createModal">
+            <i class="bi bi-plus-circle"></i> Nuevo Banco
+        </button>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="stats-card gradient-primary">
+                <i class="bi bi-bank" style="font-size: 2rem; opacity: 0.8;"></i>
+                <h3>@totalBancos</h3>
+                <p>Total Bancos</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card gradient-success">
+                <i class="bi bi-check-circle-fill" style="font-size: 2rem; opacity: 0.8;"></i>
+                <h3>@bancosActivos</h3>
+                <p>Activos</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card gradient-warning">
+                <i class="bi bi-x-circle-fill" style="font-size: 2rem; opacity: 0.8;"></i>
+                <h3>@bancosInactivos</h3>
+                <p>Inactivos</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-modern">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th><i class="bi bi-hash"></i> ID</th>
+                    <th><i class="bi bi-bank"></i> Nombre del Banco</th>
+                    <th><i class="bi bi-toggle-on"></i> Estado</th>
+                    <th class="text-center"><i class="bi bi-gear"></i> Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var bank in Model)
+                    {
+                        <tr>
+                            <td><strong>#@bank.BankId</strong></td>
+                            <td>
+                                <div class="bank-icon">
+                                    <i class="bi bi-bank"></i>
+                                </div>
+                                <div class="bank-info">
+                                    <span class="bank-name">@bank.BankName</span>
+                                </div>
+                            </td>
+                            <td>
+                                @if (bank.IsActive)
+                                {
+                                    <span class="badge badge-active">
+                                        <i class="bi bi-check-circle"></i> Activo
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-inactive">
+                                        <i class="bi bi-x-circle"></i> Inactivo
+                                    </span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <button class="btn-action btn-view" onclick="loadDetails(@bank.BankId)" title="Ver Detalles">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                @if (bank.IsActive)
+                                {
+                                    <button class="btn-action btn-edit" onclick="loadEdit(@bank.BankId)" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn-action btn-delete" onclick="loadDelete(@bank.BankId)" title="Desactivar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="btn-action btn-reactivate" onclick="reactivate(@bank.BankId)" title="Reactivar">
+                                        <i class="bi bi-arrow-clockwise"></i>
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center py-4">
+                            <i class="bi bi-inbox" style="font-size: 3rem; color: #dee2e6;"></i>
+                            <p class="text-muted mt-2">No hay bancos registrados</p>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Create -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="loading-spinner">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Edit -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="loading-spinner">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Details -->
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="loading-spinner">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Delete -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="loading-spinner">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        // Cargar modal de creación
+        $('#createModal').on('show.bs.modal', function () {
+            $.ajax({
+                url: '@Url.Action("Create", "Banks")',
+                type: 'GET',
+                success: function (data) {
+                    $('#createModal .modal-content').html(data);
+                },
+                error: function () {
+                    $('#createModal .modal-content').html('<div class="alert alert-danger m-3">Error al cargar el formulario</div>');
+                }
+            });
+        });
+
+        // Cargar modal de edición
+        function loadEdit(id) {
+            $.ajax({
+                url: '@Url.Action("Edit", "Banks")/' + id,
+                type: 'GET',
+                success: function (data) {
+                    $('#editModal .modal-content').html(data);
+                    $('#editModal').modal('show');
+                },
+                error: function () {
+                    alert('Error al cargar los datos del banco');
+                }
+            });
+        }
+
+        // Cargar modal de detalles
+        function loadDetails(id) {
+            $.ajax({
+                url: '@Url.Action("Details", "Banks")/' + id,
+                type: 'GET',
+                success: function (data) {
+                    $('#detailsModal .modal-content').html(data);
+                    $('#detailsModal').modal('show');
+                },
+                error: function () {
+                    alert('Error al cargar los detalles del banco');
+                }
+            });
+        }
+
+        // Cargar modal de eliminación
+        function loadDelete(id) {
+            $.ajax({
+                url: '@Url.Action("Delete", "Banks")/' + id,
+                type: 'GET',
+                success: function (data) {
+                    $('#deleteModal .modal-content').html(data);
+                    $('#deleteModal').modal('show');
+                },
+                error: function () {
+                    alert('Error al cargar la confirmación de eliminación');
+                }
+            });
+        }
+
+        // Reactivar banco
+        function reactivate(id) {
+            if (confirm('¿Está seguro de que desea reactivar este banco?')) {
+                $.ajax({
+                    url: '@Url.Action("Reactivar", "Banks")/' + id,
+                    type: 'POST',
+                    data: {
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function () {
+                        location.reload();
+                    },
+                    error: function () {
+                        alert('Error al reactivar el banco');
+                    }
+                });
+            }
+        }
+    </script>
+}

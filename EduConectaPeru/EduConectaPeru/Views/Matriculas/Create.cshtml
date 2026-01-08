@@ -1,0 +1,108 @@
+@model EduConectaPeru.Models.Matricula
+@{ Layout = null; }
+
+<style>
+    .modal-header-custom {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+        border: none;
+        padding: 20px 30px;
+        border-radius: 15px 15px 0 0;
+    }
+    .modal-header-custom h5 { margin: 0; font-weight: 600; font-size: 1.3rem; }
+    .modal-header-custom .btn-close { filter: brightness(0) invert(1); }
+    .form-label-custom { font-weight: 600; color: #495057; margin-bottom: 8px; }
+    .form-control-custom, .form-select-custom { border: 2px solid #e0e0e0; border-radius: 8px; padding: 10px 15px; }
+    .btn-submit-custom { background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%); border: none; padding: 12px 30px; border-radius: 8px; font-weight: 600; color: white; }
+    .btn-cancel-custom { background: #6c757d; border: none; padding: 12px 30px; border-radius: 8px; font-weight: 600; color: white; }
+</style>
+
+<form method="post" action="@Url.Action("Create")" id="formCreate">
+    @Html.AntiForgeryToken()
+    
+    <div class="modal-header-custom">
+        <h5><i class="bi bi-plus-circle"></i> Nueva Matrícula</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+    
+    <div class="modal-body">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label-custom">Estudiante *</label>
+                <select asp-for="StudentId" class="form-select form-select-custom" asp-items="ViewBag.Estudiantes" id="studentSelect">
+                    <option value="">-- Seleccione --</option>
+                </select>
+                <span asp-validation-for="StudentId" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label-custom">Apoderado *</label>
+                <select asp-for="LegalGuardianId" class="form-select form-select-custom" asp-items="ViewBag.Apoderados" id="guardianSelect">
+                    <option value="">-- Se carga automáticamente --</option>
+                </select>
+                <span asp-validation-for="LegalGuardianId" class="text-danger small"></span>
+                <small class="text-muted">Se selecciona automáticamente al elegir estudiante</small>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label-custom">Grado/Sección *</label>
+                <select asp-for="GradoSeccionId" class="form-select form-select-custom" asp-items="ViewBag.GradoSecciones">
+                    <option value="">-- Seleccione --</option>
+                </select>
+                <span asp-validation-for="GradoSeccionId" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label-custom">Año Escolar *</label>
+                <input asp-for="AnioEscolar" class="form-control form-control-custom" type="number" min="2024" max="2030" />
+                <span asp-validation-for="AnioEscolar" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label-custom">Monto Matrícula (S/) *</label>
+                <input asp-for="MontoMatricula" class="form-control form-control-custom" type="number" step="0.01" />
+                <span asp-validation-for="MontoMatricula" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label-custom">Estado</label>
+                <select asp-for="Estado" class="form-select form-select-custom">
+                    <option value="Activa">Activa</option>
+                    <option value="Pendiente">Pendiente</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer border-0 px-4 pb-4">
+        <button type="button" class="btn btn-cancel-custom" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-submit-custom">Guardar</button>
+    </div>
+</form>
+
+<script>
+// Auto-seleccionar apoderado cuando se selecciona estudiante
+$('#studentSelect').change(function() {
+    var studentId = $(this).val();
+    if (studentId) {
+        $.get('@Url.Action("GetLegalGuardianByStudent")', { studentId: studentId }, function(data) {
+            if (data.success && data.legalGuardianId) {
+                $('#guardianSelect').val(data.legalGuardianId);
+            }
+        });
+    } else {
+        $('#guardianSelect').val('');
+    }
+});
+
+$('#formCreate').submit(function(e) {
+    e.preventDefault();
+    $.post($(this).attr('action'), $(this).serialize(), function() {
+        location.reload();
+    }).fail(function(xhr) {
+        if (xhr.status === 400) $('#createModalContent').html(xhr.responseText);
+    });
+});
+</script>

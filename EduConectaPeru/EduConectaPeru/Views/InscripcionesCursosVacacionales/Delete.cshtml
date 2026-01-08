@@ -1,0 +1,67 @@
+﻿@model EduConectaPeru.Models.InscripcionCursoVacacional
+@{
+    Layout = null;
+}
+
+<style>
+    .modal-header-danger {
+        background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+        color: white;
+        border: none;
+        padding: 20px 30px;
+        border-radius: 15px 15px 0 0;
+    }
+
+        .modal-header-danger h5 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        .modal-header-danger .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+    .btn-danger-custom {
+        background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 600;
+        color: white;
+    }
+</style>
+
+<form method="post" action="@Url.Action("Delete", new { id = Model.InscripcionId })" id="formDelete">
+    @Html.AntiForgeryToken()
+
+    <div class="modal-header-danger">
+        <h5><i class="bi bi-exclamation-triangle"></i> Confirmar Desactivación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+
+    <div class="modal-body">
+        <div class="alert alert-warning">
+            <strong>¿Seguro que desea desactivar esta inscripción?</strong>
+            <p class="mb-0 mt-2">Se liberará un cupo en el curso.</p>
+        </div>
+
+        <p><strong>Curso:</strong> @Model.CursoVacacional?.NombreCurso</p>
+        <p><strong>Estudiante:</strong> @Model.Student?.Nombre @Model.Student?.Apellido</p>
+        <p><strong>Monto:</strong> S/ @Model.Monto.ToString("N2")</p>
+    </div>
+
+    <div class="modal-footer border-0 px-4 pb-4">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-danger-custom"><i class="bi bi-trash"></i> Desactivar</button>
+    </div>
+</form>
+
+<script>
+    $('#formDelete').submit(function(e) {
+        e.preventDefault();
+        $.post($(this).attr('action'), $(this).serialize(), function() {
+            location.reload();
+        });
+    });
+</script>

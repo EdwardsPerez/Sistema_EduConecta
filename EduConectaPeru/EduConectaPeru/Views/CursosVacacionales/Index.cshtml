@@ -1,0 +1,433 @@
+﻿@model IEnumerable<EduConectaPeru.Models.CursoVacacional>
+
+@{
+    ViewData["Title"] = "Cursos Vacacionales";
+    var totalCursos = Model?.Count() ?? 0;
+    var cursosActivos = Model?.Count(c => c.IsActive) ?? 0;
+    var cursosInactivos = totalCursos - cursosActivos;
+}
+
+<style>
+    .stats-card {
+        border-radius: 15px;
+        padding: 25px;
+        color: white;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .stats-card h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .stats-card p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+    /* ACTUALIZADO - Gradientes Azules */
+    .gradient-primary {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+    }
+
+    .gradient-success {
+        background: linear-gradient(135deg, #42A5F5 0%, #2196F3 100%);
+    }
+
+    .gradient-warning {
+        background: linear-gradient(135deg, #64B5F6 0%, #42A5F5 100%);
+    }
+
+    .table-modern {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+        .table-modern thead {
+            background: #f8f9fa;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+            .table-modern thead th {
+                border: none;
+                padding: 15px;
+                font-weight: 600;
+                color: #495057;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+        .table-modern tbody td {
+            padding: 15px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f3f5;
+        }
+
+        .table-modern tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+    .btn-action {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        transition: all 0.3s ease;
+        margin: 0 2px;
+    }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+    /* ACTUALIZADO - Botones Azules */
+    .btn-view {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, #42A5F5 0%, #2196F3 100%);
+        color: white;
+    }
+
+    .btn-delete {
+        background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
+        color: white;
+    }
+
+    .btn-reactivate {
+        background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
+        color: white;
+    }
+
+    /* ACTUALIZADO - Botón Principal Azul */
+    .btn-primary-custom {
+        background: #fff;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(25, 118, 210, 0.4);
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(25, 118, 210, 0.6);
+        }
+
+    .badge-active {
+        background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.75rem;
+    }
+
+    .badge-inactive {
+        background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.75rem;
+    }
+
+    .modal-content {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+        color: white;
+        box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+    }
+    }
+
+    .cupos-badge {
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .cupos-disponibles {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .cupos-limitados {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .cupos-agotados {
+        background: #f8d7da;
+        color: #721c24;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="mb-1"><i class="bi bi-sun"></i> Cursos Vacacionales</h2>
+            </div>
+            <button type="button" class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#createModal">
+                <i class="bi bi-plus-circle"></i> Nuevo Curso Vacacional
+            </button>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="stats-card gradient-primary">
+                <i class="bi bi-journals" style="font-size: 2rem; opacity: 0.8;"></i>
+                <h3>@totalCursos</h3>
+                <p>Total Cursos</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card gradient-success">
+                <i class="bi bi-check-circle" style="font-size: 2rem; opacity: 0.8;"></i>
+                <h3>@cursosActivos</h3>
+                <p>Cursos Activos</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card gradient-warning">
+                <i class="bi bi-x-circle" style="font-size: 2rem; opacity: 0.8;"></i>
+                <h3>@cursosInactivos</h3>
+                <p>Cursos Inactivos</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-modern">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th><i class="bi bi-hash"></i> ID</th>
+                    <th><i class="bi bi-bookmark"></i> Nombre del Curso</th>
+                    <th><i class="bi bi-calendar-range"></i> Fecha Inicio</th>
+                    <th><i class="bi bi-calendar-check"></i> Fecha Fin</th>
+                    <th><i class="bi bi-cash"></i> Costo</th>
+                    <th><i class="bi bi-people"></i> Capacidad</th>
+                    <th><i class="bi bi-check2-square"></i> Disponibles</th>
+                    <th><i class="bi bi-toggle-on"></i> Estado</th>
+                    <th class="text-center"><i class="bi bi-gear"></i> Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var curso in Model)
+                    {
+                        var cuposDisponibles = curso.CuposDisponibles;
+                        var porcentajeDisponible = curso.CapacidadMaxima > 0
+                        ? (cuposDisponibles * 100.0 / curso.CapacidadMaxima)
+                        : 0;
+                        var cuposClass = porcentajeDisponible > 50 ? "cupos-disponibles"
+                        : porcentajeDisponible > 0 ? "cupos-limitados"
+                        : "cupos-agotados";
+
+                        <tr>
+                            <td><strong>#@curso.CursoVacacionalId</strong></td>
+                            <td>
+                                <strong>@curso.NombreCurso</strong>
+                                @if (!string.IsNullOrEmpty(curso.Descripcion) && curso.Descripcion.Length > 50)
+                                {
+                                    <br />
+                        
+                                    <small class="text-muted">@curso.Descripcion.Substring(0, 50)...</small>
+                                }
+                            </td>
+                            <td>@curso.FechaInicio.ToString("dd/MM/yyyy")</td>
+                            <td>@curso.FechaFin.ToString("dd/MM/yyyy")</td>
+                            <td><strong class="text-success">S/ @curso.Costo.ToString("N2")</strong></td>
+                            <td>@curso.CapacidadMaxima</td>
+                            <td>
+                                <span class="cupos-badge @cuposClass">
+                                    @cuposDisponibles disponibles
+                                </span>
+                            </td>
+                            <td>
+                                @if (curso.IsActive)
+                                {
+                                    <span class="badge badge-active">
+                                        <i class="bi bi-check-circle"></i> Activo
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-inactive">
+                                        <i class="bi bi-x-circle"></i> Inactivo
+                                    </span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <button class="btn btn-action btn-view" onclick="loadDetails(@curso.CursoVacacionalId)" title="Ver detalles">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                @if (curso.IsActive)
+                                {
+                                    <button class="btn btn-action btn-edit" onclick="loadEdit(@curso.CursoVacacionalId)" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-action btn-delete" onclick="loadDelete(@curso.CursoVacacionalId)" title="Desactivar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-action btn-reactivate" onclick="reactivate(@curso.CursoVacacionalId)" title="Reactivar">
+                                        <i class="bi bi-arrow-clockwise"></i>
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="9" class="text-center py-5">
+                            <i class="bi bi-inbox" style="font-size: 3rem; color: #dee2e6;"></i>
+                            <p class="text-muted mt-3">No hay cursos vacacionales registrados</p>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Create -->
+<div class="modal fade" id="createModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="createModalContent">
+            <div class="text-center p-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Edit -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="editModalContent">
+            <div class="text-center p-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Details -->
+<div class="modal fade" id="detailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="detailsModalContent">
+            <div class="text-center p-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Delete -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" id="deleteModalContent">
+            <div class="text-center p-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Cargar modal de creación
+        $('#createModal').on('show.bs.modal', function () {
+            $.get('@Url.Action("Create", "CursosVacacionales")', function (data) {
+                $('#createModalContent').html(data);
+            });
+        });
+
+        // Cargar modal de edición
+        function loadEdit(id) {
+            $.get('@Url.Action("Edit", "CursosVacacionales")/' + id, function (data) {
+                $('#editModalContent').html(data);
+                $('#editModal').modal('show');
+            });
+        }
+
+        // Cargar modal de detalles
+        function loadDetails(id) {
+            $.get('@Url.Action("Details", "CursosVacacionales")/' + id, function (data) {
+                $('#detailsModalContent').html(data);
+                $('#detailsModal').modal('show');
+            });
+        }
+
+        // Cargar modal de eliminación
+        function loadDelete(id) {
+            $.get('@Url.Action("Delete", "CursosVacacionales")/' + id, function (data) {
+                $('#deleteModalContent').html(data);
+                $('#deleteModal').modal('show');
+            });
+        }
+
+        // Reactivar curso
+                function reactivate(id) {
+            if (confirm('¿Está seguro de que desea reactivar este curso vacacional?')) {
+                $.ajax({
+                    url: '@Url.Action("Reactivar", "CursosVacacionales")/' + id,
+                    type: 'POST',
+                    data: {
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function () {
+                        location.reload();
+                    },
+                    error: function () {
+                        alert('Error al reactivar el curso vacacional');
+                    }
+                });
+            }
+        }
+    </script>
+}

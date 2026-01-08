@@ -1,0 +1,214 @@
+﻿@model IEnumerable<EduConectaPeru.Models.ConfiguracionCosto>
+
+@{
+    ViewData["Title"] = "Configuración de Costos";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-gear-fill"></i> Configuración de Costos</h1>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Nueva Configuración
+    </a>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="alert alert-info" role="alert">
+    <h5 class="alert-heading">
+        <i class="bi bi-info-circle"></i> Información Importante
+    </h5>
+    <p class="mb-0">
+        Esta configuración define los costos de <strong>Matrícula</strong> y <strong>Pensión</strong> por grado y año escolar.
+        Solo los administradores pueden acceder a este módulo.
+    </p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Año Escolar</th>
+                        <th>Tipo de Costo</th>
+                        <th>Grado</th>
+                        <th class="text-end">Monto</th>
+                        <th>Fecha Creación</th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr class="@(item.IsActive ? "" : "table-secondary")">
+                                <td>
+                                    <strong>@item.AnioEscolar</strong>
+                                </td>
+                                <td>
+                                    @if (item.TipoCosto == "Matricula")
+                                    {
+                                        <span class="badge bg-primary">
+                                            <i class="bi bi-file-earmark-check"></i> Matrícula
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-info">
+                                            <i class="bi bi-calendar-month"></i> Pensión
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    <i class="bi bi-book"></i> @item.GradoSeccionId
+                                </td>
+                                <td class="text-end">
+                                    <strong class="text-success">S/ @item.Monto.ToString("N2")</strong>
+                                </td>
+                                <td>
+                                    <small>@item.FechaVigencia.ToString("dd/MM/yyyy")</small>
+                                </td>
+                                <td class="text-center">
+                                    @if (item.IsActive)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle"></i> Activa
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">
+                                            <i class="bi bi-dash-circle"></i> Desactivada
+                                        </span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.ConfigId"
+                                           class="btn btn-sm btn-info"
+                                           title="Ver Detalles">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        @if (item.IsActive)
+                                        {
+                                            <a asp-action="Edit" asp-route-id="@item.ConfigId"
+                                               class="btn btn-sm btn-warning"
+                                               title="Editar">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.ConfigId"
+                                               class="btn btn-sm btn-danger"
+                                               title="Desactivar">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-sm btn-warning" disabled title="No se puede editar (desactivada)">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <form asp-action="Reactivar" asp-route-id="@item.ConfigId"
+                                                  method="post"
+                                                  style="display: inline;">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-success"
+                                                        title="Reactivar"
+                                                        onclick="return confirm('¿Está seguro de reactivar esta configuración?');">
+                                                    <i class="bi bi-arrow-counterclockwise"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">
+                                <i class="bi bi-inbox"></i> No hay configuraciones registradas
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="mt-3">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-info-circle"></i> Estadísticas
+                    </h5>
+                    <p class="card-text mb-1">
+                        <strong>Total configuraciones:</strong> @Model.Count()
+                    </p>
+                    <p class="card-text mb-1">
+                        <strong>Activas:</strong> @Model.Count(c => c.IsActive)
+                    </p>
+                    <p class="card-text mb-0">
+                        <strong>Desactivadas:</strong> @Model.Count(c => !c.IsActive)
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-cash-stack"></i> Por Tipo
+                    </h5>
+                    <p class="card-text mb-1">
+                        <strong>Matrículas:</strong> @Model.Count(c => c.TipoCosto == "Matricula")
+                    </p>
+                    <p class="card-text mb-0">
+                        <strong>Pensiones:</strong> @Model.Count(c => c.TipoCosto == "Pension")
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-lightbulb"></i> Nota
+                    </h5>
+                    <p class="card-text small">
+                        Las configuraciones desactivadas se muestran en gris.
+                        Puede reactivarlas en cualquier momento.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        setTimeout(function() {
+            $('.alert').fadeOut('slow');
+        }, 5000);
+    </script>
+}

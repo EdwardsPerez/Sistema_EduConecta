@@ -1,0 +1,344 @@
+﻿@model EduConectaPeru.Models.Student
+@{
+    Layout = null;
+}
+
+<style>
+    .modal-header {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+        border: none;
+        padding: 20px 30px;
+    }
+
+        .modal-header h5 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+    .modal-body {
+        padding: 30px;
+    }
+
+    .student-header {
+        text-align: center;
+        padding: 20px;
+        background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+        border-radius: 15px;
+        margin-bottom: 25px;
+    }
+
+    .student-avatar-large {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 2rem;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+    }
+
+    .student-header h4 {
+        margin: 0;
+        color: #1976D2;
+        font-weight: 700;
+    }
+
+    .student-header p {
+        margin: 5px 0 0 0;
+        color: #666;
+    }
+
+    .detail-section {
+        margin-bottom: 25px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 15px;
+        border-left: 4px solid #1976D2;
+    }
+
+    .detail-section-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+        color: #1976D2;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+    .detail-label {
+        font-weight: 600;
+        color: #495057;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .detail-value {
+        color: #212529;
+        text-align: right;
+    }
+
+    .badge {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .badge-active {
+        background: linear-gradient(135deg, #42A5F5 0%, #2196F3 100%);
+        color: white;
+    }
+
+    .badge-inactive {
+        background: linear-gradient(135deg, #64B5F6 0%, #42A5F5 100%);
+        color: white;
+    }
+
+    .info-box {
+        background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+        border-left: 4px solid #1976D2;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+
+        .info-box i {
+            color: #1976D2;
+            font-size: 1.2rem;
+        }
+
+        .info-box p {
+            margin: 0;
+            color: #1976D2;
+            font-weight: 500;
+        }
+</style>
+
+<div class="modal-header">
+    <h5><i class="bi bi-eye-fill"></i> Detalles del Estudiante</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+    <div class="student-header">
+        <div class="student-avatar-large">
+            @Model.Nombre.Substring(0, 1)@Model.Apellido.Substring(0, 1)
+        </div>
+        <h4>@Model.Nombre @Model.Apellido</h4>
+        <p>DNI: @Model.DNI</p>
+        @if (Model.IsActive)
+        {
+            <span class="badge badge-active">
+                <i class="bi bi-check-circle"></i> Activo
+            </span>
+        }
+        else
+        {
+            <span class="badge badge-inactive">
+                <i class="bi bi-x-circle"></i> Inactivo
+            </span>
+        }
+    </div>
+
+    <div class="detail-section">
+        <div class="detail-section-title">
+            <i class="bi bi-person-fill"></i>
+            <span>Información Personal</span>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-hash"></i> ID Estudiante:
+            </div>
+            <div class="detail-value">
+                <strong>#@Model.StudentId</strong>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-card-text"></i> DNI:
+            </div>
+            <div class="detail-value">
+                <strong>@Model.DNI</strong>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-person"></i> Nombre Completo:
+            </div>
+            <div class="detail-value">
+                @Model.Nombre @Model.Apellido
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-calendar"></i> Fecha de Nacimiento:
+            </div>
+            <div class="detail-value">
+                @Model.FechaNacimiento.ToString("dd/MM/yyyy")
+                @{
+                    var edad = DateTime.Now.Year - Model.FechaNacimiento.Year;
+                    if (Model.FechaNacimiento > DateTime.Now.AddYears(-edad)) edad--;
+                }
+                <span class="text-muted">(@edad años)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-section">
+        <div class="detail-section-title">
+            <i class="bi bi-telephone-fill"></i>
+            <span>Información de Contacto</span>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-telephone"></i> Teléfono:
+            </div>
+            <div class="detail-value">
+                @(string.IsNullOrEmpty(Model.Telefono) ? "No registrado" : Model.Telefono)
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-envelope"></i> Email:
+            </div>
+            <div class="detail-value">
+                @(string.IsNullOrEmpty(Model.Email) ? "No registrado" : Model.Email)
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-geo-alt"></i> Dirección:
+            </div>
+            <div class="detail-value">
+                @(string.IsNullOrEmpty(Model.Direccion) ? "No registrada" : Model.Direccion)
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-section">
+        <div class="detail-section-title">
+            <i class="bi bi-person-badge-fill"></i>
+            <span>Información del Apoderado</span>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-person-badge"></i> Apoderado:
+            </div>
+            <div class="detail-value">
+                @if (Model.LegalGuardian != null)
+                {
+                    <strong>@Model.LegalGuardian.Nombre @Model.LegalGuardian.Apellido</strong>
+                }
+                else
+                {
+                    <span class="text-muted">No asignado</span>
+                }
+            </div>
+        </div>
+
+        @if (Model.LegalGuardian != null)
+        {
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="bi bi-card-text"></i> DNI Apoderado:
+                </div>
+                <div class="detail-value">
+                    @Model.LegalGuardian.DNI
+                </div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="bi bi-telephone"></i> Teléfono Apoderado:
+                </div>
+                <div class="detail-value">
+                    @(string.IsNullOrEmpty(Model.LegalGuardian.Telefono) ? "No registrado" : Model.LegalGuardian.Telefono)
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="detail-section">
+        <div class="detail-section-title">
+            <i class="bi bi-clock-fill"></i>
+            <span>Información del Sistema</span>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-calendar-plus"></i> Fecha de Registro:
+            </div>
+            <div class="detail-value">
+                @Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-toggle-on"></i> Estado:
+            </div>
+            <div class="detail-value">
+                @if (Model.IsActive)
+                {
+                    <span class="badge badge-active">
+                        <i class="bi bi-check-circle"></i> Activo
+                    </span>
+                }
+                else
+                {
+                    <span class="badge badge-inactive">
+                        <i class="bi bi-x-circle"></i> Inactivo
+                    </span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <p>
+            <i class="bi bi-info-circle-fill"></i>
+            <strong>Información:</strong> Este estudiante está registrado en el sistema desde @Model.FechaRegistro.ToString("dd/MM/yyyy").
+        </p>
+    </div>
+</div>
+
+<div class="modal-footer" style="border-top: 1px solid #dee2e6; padding: 20px 30px;">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        <i class="bi bi-x-circle"></i> Cerrar
+    </button>
+</div>

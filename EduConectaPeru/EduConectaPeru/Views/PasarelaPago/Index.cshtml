@@ -1,0 +1,255 @@
+﻿@model EduConectaPeru.Models.CarritoCompras
+
+@{
+    ViewData["Title"] = "Pasarela de Pago";
+    var paymentTypes = ViewBag.PaymentTypes as List<EduConectaPeru.Models.PaymentType>;
+    var banks = ViewBag.Banks as List<EduConectaPeru.Models.Bank>;
+}
+
+<div class="mb-4">
+    <h1><i class="bi bi-credit-card"></i> Pasarela de Pago Seguro</h1>
+    <p class="text-muted">Complete los datos de su tarjeta para procesar el pago</p>
+</div>
+
+<div class="row">
+    <!-- Formulario de Pago -->
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-lock-fill"></i> Información de Pago
+                </h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="ProcesarPago" method="post" id="formPago">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="carritoId" value="@Model.CarritoId" />
+
+                    <!-- Tipo de Tarjeta -->
+                    <div class="form-group mb-3">
+                        <label class="form-label">Tipo de Tarjeta</label>
+                        <select name="tipoTarjeta" class="form-select" required>
+                            <option value="">-- Seleccione --</option>
+                            <option value="Visa">Visa</option>
+                            <option value="Mastercard">Mastercard</option>
+                            <option value="American Express">American Express</option>
+                        </select>
+                    </div>
+
+                    <!-- Número de Tarjeta -->
+                    <div class="form-group mb-3">
+                        <label class="form-label">Número de Tarjeta</label>
+                        <input type="text"
+                               name="numeroTarjeta"
+                               class="form-control"
+                               placeholder="1234 5678 9012 3456"
+                               maxlength="19"
+                               id="numeroTarjeta"
+                               required />
+                        <small class="form-text text-muted">Ingrese los 16 dígitos de su tarjeta</small>
+                    </div>
+
+                    <!-- Nombre del Titular -->
+                    <div class="form-group mb-3">
+                        <label class="form-label">Nombre del Titular</label>
+                        <input type="text"
+                               name="nombreTitular"
+                               class="form-control"
+                               placeholder="Nombre como aparece en la tarjeta"
+                               style="text-transform: uppercase;"
+                               required />
+                    </div>
+
+                    <!-- Fecha de Vencimiento y CVV -->
+                    <div class="row">
+                        <div class="col-md-8">
+                            <label class="form-label">Fecha de Vencimiento</label>
+                            <div class="row">
+                                <div class="col-6">
+                                    <select name="mesVencimiento" class="form-select" required>
+                                        <option value="">Mes</option>
+                                        @for (int i = 1; i <= 12; i++)
+                                        {
+                                            <option value="@i.ToString("00")">@i.ToString("00")</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <select name="anioVencimiento" class="form-select" required>
+                                        <option value="">Año</option>
+                                        @for (int i = DateTime.Now.Year; i <= DateTime.Now.Year + 10; i++)
+                                        {
+                                            <option value="@i.ToString().Substring(2)">@i</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">CVV</label>
+                            <input type="text"
+                                   name="cvv"
+                                   class="form-control"
+                                   placeholder="123"
+                                   maxlength="4"
+                                   pattern="[0-9]{3,4}"
+                                   required />
+                            <small class="form-text text-muted">
+                                <i class="bi bi-info-circle"></i> 3-4 dígitos
+                            </small>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <!-- Método de Pago -->
+                    <div class="form-group mb-3">
+                        <label class="form-label">Método de Pago</label>
+                        <select name="paymentTypeId" class="form-select" required>
+                            <option value="">-- Seleccione --</option>
+                            @if (paymentTypes != null)
+                            {
+                                @foreach (var type in paymentTypes)
+                                {
+                                    <option value="@type.PaymentTypeId">@type.TypeName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Banco (opcional) -->
+                    <div class="form-group mb-3">
+                        <label class="form-label">Banco (Opcional)</label>
+                        <select name="bankId" class="form-select">
+                            <option value="">-- Seleccione --</option>
+                            @if (banks != null)
+                            {
+                                @foreach (var bank in banks.Where(b => b.IsActive))
+                                {
+                                    <option value="@bank.BankId">@bank.BankName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-shield-check"></i> Procesar Pago de S/ @Model.MontoTotal.ToString("N2")
+                        </button>
+                        <a asp-controller="CarritoCompras" asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Volver al Carrito
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Seguridad -->
+        <div class="card mt-3">
+            <div class="card-body">
+                <h6 class="card-title">
+                    <i class="bi bi-shield-lock text-success"></i> Pago 100% Seguro
+                </h6>
+                <p class="card-text small mb-0">
+                    Sus datos están protegidos con encriptación SSL de 256 bits.
+                    No almacenamos información completa de tarjetas de crédito.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resumen del Pedido -->
+    <div class="col-lg-5">
+        <div class="card border-info">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-receipt"></i> Resumen del Pedido
+                </h5>
+            </div>
+            <div class="card-body">
+                <h6 class="mb-3">Cuotas a Pagar (@Model.DetallesCarrito.Count)</h6>
+
+                <div class="list-group mb-3">
+                    @foreach (var detalle in Model.DetallesCarrito)
+                    {
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <p class="mb-1"><strong>@detalle.Concepto</strong></p>
+                                </div>
+                                <span class="badge bg-primary rounded-pill">S/ @detalle.Monto.ToString("N2")</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <hr />
+
+                <dl class="row mb-0">
+                    <dt class="col-7">Subtotal:</dt>
+                    <dd class="col-5 text-end">S/ @Model.MontoTotal.ToString("N2")</dd>
+
+                    <dt class="col-7">Cargo por servicio:</dt>
+                    <dd class="col-5 text-end text-muted">S/ 0.00</dd>
+
+                    <dt class="col-12"><hr /></dt>
+
+                    <dt class="col-7"><h5>Total a Pagar:</h5></dt>
+                    <dd class="col-5 text-end">
+                        <h4 class="text-success mb-0">S/ @Model.MontoTotal.ToString("N2")</h4>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
+        <!-- Tarjetas Aceptadas -->
+        <div class="card mt-3">
+            <div class="card-body text-center">
+                <h6 class="card-title mb-3">Tarjetas Aceptadas</h6>
+                <div class="d-flex justify-content-around">
+                    <i class="bi bi-credit-card" style="font-size: 2.5rem; color: #1434CB;"></i>
+                    <i class="bi bi-credit-card-2-front" style="font-size: 2.5rem; color: #EB001B;"></i>
+                    <i class="bi bi-credit-card-fill" style="font-size: 2.5rem; color: #016FD0;"></i>
+                </div>
+                <small class="text-muted d-block mt-2">Visa, Mastercard, American Express</small>
+            </div>
+        </div>
+
+        <!-- Información -->
+        <div class="alert alert-info mt-3">
+            <h6 class="alert-heading">
+                <i class="bi bi-info-circle"></i> Información Importante
+            </h6>
+            <ul class="small mb-0 ps-3">
+                <li>Este es un sistema de pago simulado (90% aprobación)</li>
+                <li>No se realizan cargos reales a tarjetas</li>
+                <li>Solo se guardarán los últimos 4 dígitos</li>
+                <li>Recibirá un comprobante tras la transacción</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Formatear número de tarjeta con espacios
+        document.getElementById('numeroTarjeta').addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\s/g, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+        });
+
+        // Validar solo números en CVV
+        document.querySelector('input[name="cvv"]').addEventListener('input', function (e) {
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        });
+
+        // Confirmación antes de procesar pago
+        document.getElementById('formPago').addEventListener('submit', function (e) {
+            if (!confirm('¿Está seguro de procesar el pago por S/ @Model.MontoTotal.ToString("N2")?')) {
+                e.preventDefault();
+            }
+        });
+    </script>
+}

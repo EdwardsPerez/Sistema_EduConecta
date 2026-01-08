@@ -1,0 +1,252 @@
+﻿@model EduConectaPeru.Models.CarritoCompras
+
+@{
+    ViewData["Title"] = "Mi Carrito de Compras";
+    var tieneItems = Model?.DetallesCarrito != null && Model.DetallesCarrito.Any();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-cart3"></i> Mi Carrito de Compras</h1>
+    <a asp-controller="ApoderadoDashboard" asp-action="Index" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Volver al Dashboard
+    </a>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (!tieneItems)
+{
+    <!-- Carrito Vacío -->
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <i class="bi bi-cart-x" style="font-size: 5rem; color: #6c757d;"></i>
+            <h3 class="mt-4">Su carrito está vacío</h3>
+            <p class="text-muted">No ha agregado ninguna cuota al carrito</p>
+            <div class="mt-4">
+                <a asp-controller="ApoderadoDashboard" asp-action="CuotasPendientes" class="btn btn-primary btn-lg">
+                    <i class="bi bi-receipt"></i> Ver Cuotas Pendientes
+                </a>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <!-- Carrito con Items -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-list-ul"></i> Cuotas en el Carrito (@Model.DetallesCarrito.Count)
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 50%;">Concepto</th>
+                                    <th style="width: 20%;">Estudiante</th>
+                                    <th class="text-end" style="width: 20%;">Monto</th>
+                                    <th class="text-center" style="width: 10%;">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var detalle in Model.DetallesCarrito)
+                                {
+                                    <tr>
+                                        <td>
+                                            <i class="bi bi-receipt"></i>
+                                            <strong>@detalle.Concepto</strong>
+                                        </td>
+                                        <td>
+                                            @if (detalle.Quota?.Student != null)
+                                            {
+                                                <small class="text-muted">@detalle.Quota.Student.NombreCompleto</small>
+                                            }
+                                        </td>
+                                        <td class="text-end">
+                                            <strong class="text-primary">S/ @detalle.Monto.ToString("N2")</strong>
+                                        </td>
+                                        <td class="text-center">
+                                            <form asp-action="EliminarDetalle" method="post" style="display: inline;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="detalleId" value="@detalle.DetalleId" />
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-outline-danger"
+                                                        title="Eliminar"
+                                                        onclick="return confirm('¿Está seguro de eliminar esta cuota del carrito?');">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="mt-3 d-flex justify-content-between">
+                <form asp-action="Vaciar" method="post" style="display: inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit"
+                            class="btn btn-outline-secondary"
+                            onclick="return confirm('¿Está seguro de vaciar todo el carrito?');">
+                        <i class="bi bi-trash"></i> Vaciar Carrito
+                    </button>
+                </form>
+
+                <a asp-controller="ApoderadoDashboard" asp-action="CuotasPendientes" class="btn btn-info">
+                    <i class="bi bi-plus-circle"></i> Seguir Agregando Cuotas
+                </a>
+            </div>
+        </div>
+
+        <!-- Resumen del Carrito -->
+        <div class="col-lg-4">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-calculator"></i> Resumen del Pedido
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-7">Cantidad de cuotas:</dt>
+                        <dd class="col-5 text-end">@Model.DetallesCarrito.Count</dd>
+
+                        <dt class="col-7">Subtotal:</dt>
+                        <dd class="col-5 text-end">S/ @Model.MontoTotal.ToString("N2")</dd>
+
+                        <dt class="col-7">Descuento:</dt>
+                        <dd class="col-5 text-end text-muted">S/ 0.00</dd>
+
+                        <dt class="col-12"><hr /></dt>
+
+                        <dt class="col-7"><h5>Total a Pagar:</h5></dt>
+                        <dd class="col-5 text-end">
+                            <h4 class="text-success mb-0">S/ @Model.MontoTotal.ToString("N2")</h4>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <form asp-action="ProcederPago" method="get">
+                        <button type="submit" class="btn btn-success btn-lg w-100">
+                            <i class="bi bi-credit-card"></i> Proceder al Pago
+                        </button>
+                    </form>
+                    <small class="text-muted d-block mt-2 text-center">
+                        <i class="bi bi-shield-check"></i> Pago 100% seguro
+                    </small>
+                </div>
+            </div>
+
+            <!-- Información Adicional -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <i class="bi bi-info-circle"></i> Información
+                    </h6>
+                    <ul class="small mb-0 ps-3">
+                        <li>Puede eliminar cuotas individuales del carrito</li>
+                        <li>El carrito se mantiene hasta que realice el pago</li>
+                        <li>Puede agregar más cuotas antes de pagar</li>
+                        <li>El pago se procesa de forma segura</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Métodos de Pago Aceptados -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <i class="bi bi-credit-card-2-front"></i> Métodos de Pago
+                    </h6>
+                    <div class="d-flex justify-content-around align-items-center">
+                        <i class="bi bi-credit-card" style="font-size: 2rem; color: #0066cc;"></i>
+                        <i class="bi bi-wallet2" style="font-size: 2rem; color: #28a745;"></i>
+                        <i class="bi bi-bank" style="font-size: 2rem; color: #6c757d;"></i>
+                    </div>
+                    <small class="text-muted d-block mt-2 text-center">
+                        Aceptamos tarjetas de crédito, débito y transferencias
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cuotas Seleccionadas - Vista Detallada -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-list-check"></i> Detalle de las Cuotas
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        @foreach (var detalle in Model.DetallesCarrito)
+                        {
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-primary">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h6 class="card-subtitle text-muted mb-2">
+                                                    @if (detalle.Quota?.Student != null)
+                                                    {
+                                                        <i class="bi bi-person"></i> 
+                                                        @detalle.Quota.Student.NombreCompleto
+                                                    }
+                                                </h6>
+                                                <p class="card-text mb-1">
+                                                    <strong>@detalle.Concepto</strong>
+                                                </p>
+                                                @if (detalle.Quota != null)
+                                                {
+                                                    <small class="text-muted">
+                                                        Vencimiento: @detalle.Quota.FechaVencimiento.ToString("dd/MM/yyyy")
+                                                    </small>
+                                                }
+                                            </div>
+                                            <div class="text-end">
+                                                <h5 class="text-primary mb-0">S/ @detalle.Monto.ToString("N2")</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        setTimeout(function() {
+            $('.alert').fadeOut('slow');
+        }, 5000);
+    </script>
+}

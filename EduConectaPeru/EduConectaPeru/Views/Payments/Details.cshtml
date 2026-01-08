@@ -1,0 +1,309 @@
+﻿@model EduConectaPeru.Models.Payment
+@{
+    Layout = null;
+}
+
+<style>
+    .modal-header {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+        border: none;
+        padding: 20px 30px;
+    }
+
+        .modal-header h5 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+    .modal-body {
+        padding: 30px;
+    }
+
+    .payment-header {
+        text-align: center;
+        padding: 20px;
+        background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+        border-radius: 15px;
+        margin-bottom: 25px;
+    }
+
+    .payment-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 2rem;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    }
+
+    .payment-header h4 {
+        margin: 0;
+        color: #1976D2;
+        font-weight: 700;
+    }
+
+    .payment-header p {
+        margin: 5px 0 0 0;
+        color: #666;
+    }
+
+    .detail-section {
+        margin-bottom: 25px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 15px;
+        border-left: 4px solid #1976D2;
+    }
+
+    .detail-section-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+        color: #1976D2;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+    .detail-label {
+        font-weight: 600;
+        color: #495057;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .detail-value {
+        color: #212529;
+        text-align: right;
+    }
+
+    .badge-payment {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .badge-efectivo {
+        background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
+        color: white;
+    }
+
+    .badge-tarjeta {
+        background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+        color: white;
+    }
+
+    .badge-transferencia {
+        background: linear-gradient(135deg, #42A5F5 0%, #2196F3 100%);
+        color: white;
+    }
+</style>
+
+<div class="modal-header">
+    <h5><i class="bi bi-eye-fill"></i> Detalles del Pago</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+    <div class="payment-header">
+        <div class="payment-icon">
+            <i class="bi bi-check-circle"></i>
+        </div>
+        <h4>Pago Registrado</h4>
+        <p>ID de Pago: #@Model.PaymentId</p>
+    </div>
+
+    <!-- Información del Pago -->
+    <div class="detail-section">
+        <div class="detail-section-title">
+            <i class="bi bi-cash-coin"></i>
+            <span>Información del Pago</span>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-hash"></i> ID Pago:
+            </div>
+            <div class="detail-value">
+                <strong>#@Model.PaymentId</strong>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-currency-dollar"></i> Monto:
+            </div>
+            <div class="detail-value">
+                <span class="text-success fs-4 fw-bold">S/ @Model.Monto.ToString("N2")</span>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-calendar-event"></i> Fecha de Pago:
+            </div>
+            <div class="detail-value">
+                <strong>@Model.FechaPago.ToString("dd/MM/yyyy")</strong> a las @Model.FechaPago.ToString("HH:mm")
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-credit-card"></i> Método de Pago:
+            </div>
+            <div class="detail-value">
+                @if (Model.PaymentType != null)
+                {
+                    var typeName = Model.PaymentType.TypeName ?? "";
+                    if (typeName.Contains("Efectivo"))
+                    {
+                        <span class="badge-payment badge-efectivo">
+                            <i class="bi bi-cash-stack"></i> Efectivo
+                        </span>
+                    }
+                    else if (typeName.Contains("Tarjeta"))
+                    {
+                        <span class="badge-payment badge-tarjeta">
+                            <i class="bi bi-credit-card"></i> Tarjeta
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge-payment badge-transferencia">
+                            <i class="bi bi-arrow-left-right"></i> Transferencia
+                        </span>
+                    }
+                }
+                else
+                {
+                    <span class="text-muted">No especificado</span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Información del Estudiante -->
+    <div class="detail-section">
+        <div class="detail-section-title">
+            <i class="bi bi-person-fill"></i>
+            <span>Información del Estudiante</span>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-hash"></i> ID Estudiante:
+            </div>
+            <div class="detail-value">
+                <strong>#@Model.StudentId</strong>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-person"></i> Nombre Completo:
+            </div>
+            <div class="detail-value">
+                @Model.Student?.Nombre @Model.Student?.Apellido
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">
+                <i class="bi bi-card-text"></i> DNI:
+            </div>
+            <div class="detail-value">
+                @Model.Student?.DNI
+            </div>
+        </div>
+    </div>
+
+    <!-- Detalles Adicionales -->
+    <div class="detail-section">
+        <div class="detail-section-title">
+            <i class="bi bi-info-circle-fill"></i>
+            <span>Detalles Adicionales</span>
+        </div>
+
+        @if (Model.Bank != null)
+        {
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="bi bi-bank"></i> Banco:
+                </div>
+                <div class="detail-value">
+                    @Model.Bank.BankName
+                </div>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.NumeroOperacion))
+        {
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="bi bi-hash"></i> Nº Operación:
+                </div>
+                <div class="detail-value">
+                    <strong>@Model.NumeroOperacion</strong>
+                </div>
+            </div>
+        }
+
+        @if (Model.Quota != null)
+        {
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="bi bi-receipt"></i> Cuota Pagada:
+                </div>
+                <div class="detail-value">
+                    @Model.Quota.Periodo
+                </div>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.Observaciones))
+        {
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="bi bi-chat-left-text"></i> Observaciones:
+                </div>
+                <div class="detail-value">
+                    @Model.Observaciones
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="modal-footer" style="border-top: 1px solid #dee2e6; padding: 20px 30px;">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        <i class="bi bi-x-circle"></i> Cerrar
+    </button>
+</div>

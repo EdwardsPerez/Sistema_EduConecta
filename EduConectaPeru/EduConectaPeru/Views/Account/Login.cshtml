@@ -1,0 +1,343 @@
+﻿@{
+    ViewData["Title"] = "Iniciar Sesión";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - EduConecta Perú</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .welcome-panel {
+            flex: 1;
+            background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            bottom: -100px;
+            left: -50px;
+        }
+
+        .circle-2 {
+            width: 200px;
+            height: 200px;
+            top: 50px;
+            right: -50px;
+        }
+
+        .circle-3 {
+            width: 150px;
+            height: 150px;
+            bottom: 100px;
+            right: 100px;
+        }
+
+        .welcome-logo {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 2rem;
+        }
+
+            .welcome-logo img {
+                max-width: 180px;
+                height: auto;
+                filter: brightness(0) invert(1);
+                opacity: 0.95;
+            }
+
+        .welcome-content {
+            position: relative;
+            z-index: 2;
+            color: white;
+            text-align: center;
+            max-width: 400px;
+        }
+
+            .welcome-content h1 {
+                font-size: 3rem;
+                font-weight: 700;
+                margin-bottom: 1rem;
+                letter-spacing: 1px;
+            }
+
+            .welcome-content p {
+                font-size: 1.1rem;
+                opacity: 0.9;
+                line-height: 1.6;
+            }
+
+        .login-panel {
+            flex: 1;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+            .login-logo img {
+                max-width: 120px;
+                height: auto;
+                margin-bottom: 1rem;
+            }
+
+        .login-header h2 {
+            color: #1976D2;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .login-header p {
+            color: #6c757d;
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+            .form-group label {
+                display: block;
+                color: #333;
+                font-weight: 500;
+                margin-bottom: 0.5rem;
+                font-size: 0.95rem;
+            }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+            .input-wrapper i {
+                position: absolute;
+                left: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #6c757d;
+                font-size: 1.1rem;
+            }
+
+        .form-control {
+            width: 100%;
+            padding: 0.85rem 1rem 0.85rem 3rem;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+            .form-control:focus {
+                outline: none;
+                border-color: #1976D2;
+                box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+            }
+
+            .form-control::placeholder {
+                color: #adb5bd;
+            }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+            .remember-me input[type="checkbox"] {
+                width: 18px;
+                height: 18px;
+                margin-right: 8px;
+                cursor: pointer;
+                accent-color: #1976D2;
+            }
+
+            .remember-me label {
+                color: #495057;
+                font-size: 0.95rem;
+                cursor: pointer;
+                margin: 0;
+            }
+
+        .btn-login {
+            width: 100%;
+            padding: 0.95rem;
+            background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+        }
+
+            .btn-login:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(25, 118, 210, 0.4);
+            }
+
+            .btn-login:active {
+                transform: translateY(0);
+            }
+
+        .alert {
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+        }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="welcome-panel">
+   
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
+
+  
+        <div class="welcome-logo">
+            <img src="/images/logo-educonecta.png" alt="EduConecta Logo">
+        </div>
+
+    
+        <div class="welcome-content">
+            <h1>BIENVENIDO</h1>
+            <p>Sistema de Gestión Educativa para instituciones modernas</p>
+        </div>
+    </div>
+
+ 
+    <div class="login-panel">
+        <div class="login-container">
+         
+            <div class="login-logo">
+                <img src="/images/logo-educonecta.png" alt="EduConecta Logo">
+            </div>
+
+          
+            <div class="login-header">
+                <h2>Iniciar Sesión</h2>
+                <p>Ingresa tus credenciales para continuar</p>
+            </div>
+
+ 
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger" role="alert">
+                    <ul class="mb-0" style="padding-left: 1.5rem;">
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <li>@error.ErrorMessage</li>
+                        }
+                    </ul>
+                </div>
+            }
+
+          
+            <form method="post" asp-controller="Account" asp-action="Login">
+                <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+
+            
+                <div class="form-group">
+                    <label for="username">Usuario</label>
+                    <div class="input-wrapper">
+                        <i class="bi bi-person"></i>
+                        <input type="text"
+                               class="form-control"
+                               id="username"
+                               name="username"
+                               placeholder="Ingrese su usuario"
+                               required
+                               autofocus />
+                    </div>
+                </div>
+
+               
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <div class="input-wrapper">
+                        <i class="bi bi-lock"></i>
+                        <input type="password"
+                               class="form-control"
+                               id="password"
+                               name="password"
+                               placeholder="Ingrese su contraseña"
+                               required />
+                    </div>
+                </div>
+
+               
+                <div class="remember-me">
+                    <input type="checkbox" id="rememberMe" name="rememberMe" />
+                    <label for="rememberMe">Recordarme</label>
+                </div>
+
+               
+                <button type="submit" class="btn-login">
+                    Ingresar
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
